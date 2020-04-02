@@ -16,9 +16,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
-    validate(value) {
+    async validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error('Email is invalid.');
+        throw new ErrorHandler(400, 'Email is invalid.');
+      }
+      if (this.isNew && await User.findOne({ email: value })) {
+        throw new ErrorHandler(400, 'Email already in use.');
       }
     },
   },
@@ -123,6 +126,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    enum: ['user', 'admin'],
     default: 'user',
     lowercase: true,
     trim: true,
@@ -163,19 +167,16 @@ const userSchema = new mongoose.Schema({
       },
     },
   },
+  lastLogin: {
+    type: Date,
+  },
 }, {
   timestamps: true,
 });
 
 // Connect User to their Sleep Summary data
-userSchema.virtual('sleepSummaries', {
-  ref: 'SleepSummary',
-  localField: '_id',
-  foreignField: 'owner',
-});
-
-userSchema.virtual('sleep', {
-  ref: 'Sleep',
+userSchema.virtual('sleepTrialTracker', {
+  ref: 'SleepTrialTracker',
   localField: '_id',
   foreignField: 'owner',
 });
@@ -226,6 +227,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
   if (!isMatch) {
     throw new ErrorHandler(401, 'Unable to authenticate');
   }
+
+  user.lastLogin = new Date();
+  await user.save();
 
   return user;
 };

@@ -4,7 +4,7 @@ import cors from 'cors';
 import config from '../config';
 import routes from '../api';
 import Logger from './logger';
-import { handleError } from '../utils/error';
+import { ErrorHandler, handleError } from '../utils/error';
 
 const morgan = require('morgan');
 
@@ -35,8 +35,7 @@ export default ({ app }) => {
 
   // Catch 404 errors
   app.use((req, res, next) => {
-    const error = new Error('Not Found');
-    error.status = 404;
+    const error = new ErrorHandler(404, 'Not Found');
     next(error);
   });
 

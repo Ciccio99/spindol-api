@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import { validate } from 'express-validation';
 import config from '../../config';
 import validators from '../middlewares/validators';
 import UserServices from '../../services/UserServices';
 import middlewares from '../middlewares';
+import validationSchemas from '../middlewares/validationSchemas';
 
 const route = Router();
 
@@ -29,9 +31,10 @@ export default (app) => {
     }
   });
 
-  route.post('/register', validators.userRegister, async (req, res, next) => {
+  route.post('/register', validate(validationSchemas.registerUserSchema, { keyByField: true }) /* validators.userRegister */, async (req, res, next) => {
     try {
-      const { user, token } = await UserServices.userRegister(req.userDTO);
+      const dto = { ...req.body };
+      const { user, token } = await UserServices.userRegister(dto);
       res.cookie(config.authCookieName, token, { httpOnly: true, expires: 0 });
       return res.json({ data: user });
     } catch (error) {
