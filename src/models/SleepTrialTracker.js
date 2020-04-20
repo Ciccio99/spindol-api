@@ -24,17 +24,6 @@ const sleepTrialTrackerSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  // checkIns: [{
-  //   checkIn: {
-  //     date: {
-  //       type: Date,
-  //       unique: true,
-  //     },
-  //     completed: {
-  //       type: Boolean,
-  //     },
-  //   },
-  // }],
   checkIns: [{
     date: {
       type: Date,
