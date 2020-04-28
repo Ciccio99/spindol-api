@@ -16,7 +16,7 @@ export default (app) => {
     try {
       const { user, token } = await UserServices.userLogin(req.userDTO);
       res.cookie(config.authCookieName, token, { httpOnly: true, expires: 0 });
-      return res.json({ data: user });
+      return res.json({ user });
     } catch (error) {
       return next(error);
     }
@@ -36,7 +36,7 @@ export default (app) => {
       const dto = { ...req.body };
       const { user, token } = await UserServices.userRegister(dto);
       res.cookie(config.authCookieName, token, { httpOnly: true, expires: 0 });
-      return res.json({ data: user });
+      return res.json({ user });
     } catch (error) {
       return next(error);
     }
@@ -46,7 +46,7 @@ export default (app) => {
   route.patch('/me', middlewares.auth, validators.userEdit, async (req, res, next) => {
     try {
       const user = await UserServices.userEdit(req.user, req.userDTO);
-      return res.json({ data: user });
+      return res.json({ user });
     } catch (error) {
       return next(error);
     }

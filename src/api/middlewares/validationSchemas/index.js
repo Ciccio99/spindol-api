@@ -85,6 +85,47 @@ const validationSchemas = {
       }).required(),
     }),
   },
+  createDailyDiary: {
+    body: Joi.object({
+      date: Joi.date().iso().required(),
+      mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
+      tags: Joi.array().items(Joi.string()),
+    }),
+  },
+  updateDailyDiary: {
+    body: Joi.object({
+      _id: Joi.objectId().required(),
+      date: Joi.date().iso(),
+      mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
+      tags: Joi.array().items(Joi.string()),
+    }),
+  },
+  paramsDevices: {
+    params: Joi.object({
+      device: Joi.string().trim().valid('oura', 'withings', 'fitbit').required(),
+    }),
+  },
+  sleepSummaryCreate: {
+    body: Joi.object({
+      date: Joi.date().iso().required(),
+      timezone: Joi.string().required(),
+      startDateTime: Joi.date().iso().required(),
+      endDateTime: Joi.date().iso().required(),
+      source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual').required(),
+      owner: Joi.objectId().required(),
+    }).unknown(true),
+  },
+  sleepSummaryUpdate: {
+    body: Joi.object({
+      _id: Joi.objectId().required(),
+      date: Joi.date().iso(),
+      timezone: Joi.string(),
+      startDateTime: Joi.date().iso(),
+      endDateTime: Joi.date().iso(),
+      source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual'),
+      owner: Joi.objectId(),
+    }).unknown(true),
+  },
 };
 
 export default validationSchemas;

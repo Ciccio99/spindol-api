@@ -14,11 +14,7 @@ const dailyDiarySchema = new mongoose.Schema({
     type: String,
     enum: ['awful', 'bad', 'meh', 'good', 'excellent'],
   },
-  tags: [{
-    tag: {
-      type: String,
-    },
-  }],
+  tags: [String],
 }, {
   timestamps: true,
 });

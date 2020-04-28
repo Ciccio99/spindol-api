@@ -1,5 +1,4 @@
 import SleepTrialTracker from '../models/SleepTrialTracker';
-import { ErrorHandler } from '../utils/error';
 
 const createSleepTrialTracker = async (dto) => {
   const sleepTrialTracker = new SleepTrialTracker({ ...dto });

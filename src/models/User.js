@@ -175,8 +175,15 @@ const userSchema = new mongoose.Schema({
 });
 
 // Connect User to their Sleep Summary data
-userSchema.virtual('sleepTrialTracker', {
+userSchema.virtual('sleepTrialTrackers', {
   ref: 'SleepTrialTracker',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
+// Connect User to their Sleep Summary data
+userSchema.virtual('sleepSummaries', {
+  ref: 'SleepSummary',
   localField: '_id',
   foreignField: 'owner',
 });

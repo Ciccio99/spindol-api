@@ -18,7 +18,7 @@ export default (app) => {
     try {
       const query = req.body;
       const data = await SleepTrialTrackerServices.querySleepTrialTracker(query);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -28,7 +28,7 @@ export default (app) => {
     try {
       const { id } = req.params;
       const data = await SleepTrialTrackerServices.getSleepTrialTracker(id);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -60,5 +60,4 @@ export default (app) => {
       return next(error);
     }
   });
-
 };

@@ -23,7 +23,7 @@ const handleError = (err, req, res) => {
   if (statusCode === 500) {
     Logger.error(`${statusCode} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip} - Stack Trace - ${err.stack}`);
   } else {
-    Logger.info(`${statusCode} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip} - Stack Trace - ${err.stack}`);
+    Logger.info(`${statusCode} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
   }
 
   res.status(statusCode).json({

@@ -12,7 +12,10 @@ export default ({ app }) => {
   // Load in morgan Req logger, Pass through Winston Stream
   app.use(morgan('combined', { stream: Logger.stream }));
   // Load in other middleware
-  app.use(cors());
+  app.use(cors({
+    credentials: true,
+    origin: config.corsOrigin,
+  }));
   app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +30,9 @@ export default ({ app }) => {
     res.status(200).end();
   });
   app.head('/status', (req, res) => {
+    res.status(200).end();
+  });
+  app.options('/', (req, res) => {
     res.status(200).end();
   });
 
