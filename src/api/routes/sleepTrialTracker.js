@@ -37,7 +37,7 @@ export default (app) => {
   route.post('/create', validate(validationSchemas.createSleepTrialTracker), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.createSleepTrialTracker(req.body);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -46,7 +46,7 @@ export default (app) => {
   route.post('/add/checkIn', validate(validationSchemas.checkIn), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.upsertCheckIn(req.body);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -55,7 +55,7 @@ export default (app) => {
   route.post('/update', validate(validationSchemas.updateSleepTrialTracker), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.updateSleepTrialTracker(req.body);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }

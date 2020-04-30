@@ -1,6 +1,16 @@
 import SleepTrialTracker from '../models/SleepTrialTracker';
+import { ErrorHandler } from '../utils/error';
 
 const createSleepTrialTracker = async (dto) => {
+  const existingTracker = await SleepTrialTracker.findOne({
+    sleepTrial: dto.sleepTrial,
+    owner: dto.owner,
+  });
+
+  if (existingTracker) {
+    throw new ErrorHandler(409, 'Sleep trial tracker for this sleep trial already exists.');
+  }
+
   const sleepTrialTracker = new SleepTrialTracker({ ...dto });
   await sleepTrialTracker.save();
   return sleepTrialTracker;

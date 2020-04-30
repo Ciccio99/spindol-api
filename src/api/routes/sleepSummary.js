@@ -16,9 +16,9 @@ export default (app) => {
 
   route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
-      const query = req.body;
+      const query = JSON.parse(req.query.query);
       const data = await SleepSummaryServices.query(query);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }

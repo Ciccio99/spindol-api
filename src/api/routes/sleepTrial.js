@@ -17,9 +17,9 @@ export default (app) => {
 
   route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
-      const query = req.body;
+      const query = JSON.parse(req.query.query);
       const data = await SleepTrialServices.querySleepTrial(query);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -29,7 +29,7 @@ export default (app) => {
     try {
       const { id } = req.params;
       const data = await SleepTrialServices.getSleepTrial(id);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -39,7 +39,7 @@ export default (app) => {
     try {
       const dto = { ...req.body };
       const sleepTrial = await SleepTrialServices.createSleepTrial(dto);
-      return res.json({ data: sleepTrial });
+      return res.json(sleepTrial);
     } catch (error) {
       return next(error);
     }
