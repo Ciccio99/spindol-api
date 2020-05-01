@@ -1,3 +1,4 @@
+import moment from 'moment';
 import SleepTrialTracker from '../models/SleepTrialTracker';
 import { ErrorHandler } from '../utils/error';
 
@@ -10,9 +11,10 @@ const createSleepTrialTracker = async (dto) => {
   if (existingTracker) {
     throw new ErrorHandler(409, 'Sleep trial tracker for this sleep trial already exists.');
   }
-
+  console.log('passed the throw error');
   const sleepTrialTracker = new SleepTrialTracker({ ...dto });
   await sleepTrialTracker.save();
+  await sleepTrialTracker.populate('sleepTrial').execPopulate();
   return sleepTrialTracker;
 };
 
@@ -41,7 +43,7 @@ const updateSleepTrialTracker = async (dto) => {
 
 const upsertCheckIn = async (dto) => {
   const options = { new: true };
-  const date = new Date(dto.checkIn.date);
+  const date = new Date(moment(dto.checkIn.date).startOf('day').format('YYYY-MM-DD'));
 
   let data = await SleepTrialTracker.findOneAndUpdate(
     {
@@ -60,7 +62,7 @@ const upsertCheckIn = async (dto) => {
       options,
     );
   }
-
+  await data.populate('sleepTrial').execPopulate();
   return data;
 };
 

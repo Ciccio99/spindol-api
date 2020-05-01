@@ -188,6 +188,13 @@ userSchema.virtual('sleepSummaries', {
   foreignField: 'owner',
 });
 
+// Connect User to their Daily Diary data
+userSchema.virtual('dailyDiaries', {
+  ref: 'DailyDiary',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
 userSchema.methods.toJSON = function toJSON() {
   const user = this;
   const userObject = user.toObject();

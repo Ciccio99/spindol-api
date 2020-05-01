@@ -29,7 +29,7 @@ export default {
     const options = { new: true };
     const date = new Date(dto.date);
 
-    let data = await DailyDiary.findOneAndUpdate(
+    const data = await DailyDiary.findOneAndUpdate(
       { date },
       { ...dto },
       options,
@@ -38,7 +38,7 @@ export default {
     if (!data) {
       const dailyDiary = new DailyDiary({ ...dto });
       await dailyDiary.save();
-      data = { ...dailyDiary };
+      return dailyDiary;
     }
 
     return data;

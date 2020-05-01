@@ -90,6 +90,7 @@ const validationSchemas = {
       date: Joi.date().iso().required(),
       mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
       tags: Joi.array().items(Joi.string()),
+      owner: Joi.objectId(),
     }),
   },
   updateDailyDiary: {

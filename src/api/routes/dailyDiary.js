@@ -10,9 +10,11 @@ export default (app) => {
 
   route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
-      const query = req.body;
+      const query = JSON.parse(req.query.query);
+      console.log(query);
       const data = await DailyDiaryServices.query(query);
-      return res.json({ data });
+      console.log(data);
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -22,7 +24,7 @@ export default (app) => {
     try {
       const { id } = req.params;
       const data = await DailyDiaryServices.getById(id);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -31,7 +33,7 @@ export default (app) => {
   route.post('/create', validate(validationSchemas.createDailyDiary), async (req, res, next) => {
     try {
       const data = await DailyDiaryServices.create(req.body);
-      return res.json({ data });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
@@ -40,7 +42,16 @@ export default (app) => {
   route.post('/update', validate(validationSchemas.updateDailyDiary), async (req, res, next) => {
     try {
       const data = await DailyDiaryServices.update(req.body);
-      return res.json({ data });
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.post('/upsert', validate(validationSchemas.createDailyDiary), async (req, res, next) => {
+    try {
+      const data = await DailyDiaryServices.upsert(req.body);
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
