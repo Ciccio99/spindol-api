@@ -9,7 +9,7 @@ import Logger from '../../loaders/logger';
 
 const devices = {
   oura: {
-    ...oauth.oura(`${config.baseUrl}/devices/auth/oura/callback`),
+    ...oauth.oura(`${config.baseUrl}/api/devices/auth/oura/callback`),
   },
 };
 
@@ -37,7 +37,7 @@ export default (app) => {
     if (!device || !config.devices.includes(device, 0)) {
       return next(new ErrorHandler(400, `Must include a valid device to authorize: ${config.devices}`));
     }
-    return res.json(`${config.baseUrl}/devices/auth/oura`);
+    return res.json(`${config.baseUrl}/api/devices/auth/oura`);
   });
 
   /**
