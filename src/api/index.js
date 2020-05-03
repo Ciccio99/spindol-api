@@ -12,8 +12,8 @@ export default () => {
   sleepTrial(app);
   sleepTrialTracker(app);
   dailyDiary(app);
-  devices(app);
   sleepSummary(app);
+  devices(app);
 
   return app;
 };

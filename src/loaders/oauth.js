@@ -9,18 +9,20 @@ export default {
         secret: config.oauth2.oura.client_secret,
       },
       auth: {
-        tokenHost: 'https://cloud.ouraring.com',
+        tokenHost: 'https://api.ouraring.com',
         tokenPath: '/oauth/token',
+        authorizeHost: 'https://cloud.ouraring.com',
         authorizePath: '/oauth/authorize',
       },
       options: {
         scopeSeparator: '+',
       },
     });
+
     const authorizationUri = oauth2.authorizationCode.authorizeURL({
       redirect_uri: redirectUri,
       scope: ['personal', 'daily'],
-      state: '8$)9*@#64={&25%',
+      state: 'H4etKCeAVXhBdDm5',
     });
 
     return { oauth2, authorizationUri };

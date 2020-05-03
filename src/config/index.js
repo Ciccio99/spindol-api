@@ -13,7 +13,7 @@ export default {
   jwtSecret: process.env.JWT_SECRET,
   authCookieName: process.env.AUTH_COOKIE_NAME,
   baseUrl: process.env.BASE_URL,
-  corsOrigin: process.env.CORS_ORIGIN,
+  frontEndUri: process.env.FRONT_END_URI,
   logs: {
     level: 'debug',
   },

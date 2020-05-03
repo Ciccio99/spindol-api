@@ -103,7 +103,7 @@ const validationSchemas = {
   },
   paramsDevices: {
     params: Joi.object({
-      device: Joi.string().trim().valid('oura', 'withings', 'fitbit').required(),
+      device: Joi.string().valid('oura', 'withings', 'fitbit').required(),
     }),
   },
   sleepSummaryCreate: {

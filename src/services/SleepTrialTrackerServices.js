@@ -11,7 +11,7 @@ const createSleepTrialTracker = async (dto) => {
   if (existingTracker) {
     throw new ErrorHandler(409, 'Sleep trial tracker for this sleep trial already exists.');
   }
-  console.log('passed the throw error');
+  
   const sleepTrialTracker = new SleepTrialTracker({ ...dto });
   await sleepTrialTracker.save();
   await sleepTrialTracker.populate('sleepTrial').execPopulate();

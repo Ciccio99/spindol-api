@@ -141,26 +141,49 @@ const userSchema = new mongoose.Schema({
     withings: {
       access_token: {
         type: String,
+        default: '',
       },
       refresh_token: {
         type: String,
+        default: '',
       },
       userid: {
-        type: Number,
+        type: String,
+        default: '',
       },
       expiration: {
         type: Date,
       },
     },
-    withings_temp: {
+    oura: {
       access_token: {
         type: String,
+        default: '',
       },
       refresh_token: {
         type: String,
+        default: '',
       },
       userid: {
-        type: Number,
+        type: String,
+        default: '',
+      },
+      expiration: {
+        type: Date,
+      },
+    },
+    fitbit: {
+      access_token: {
+        type: String,
+        default: '',
+      },
+      refresh_token: {
+        type: String,
+        default: '',
+      },
+      userid: {
+        type: String,
+        default: '',
       },
       expiration: {
         type: Date,
@@ -202,6 +225,11 @@ userSchema.methods.toJSON = function toJSON() {
   delete userObject.password;
   delete userObject.avatar;
   delete userObject.tokens;
+  userObject.accounts = {
+    oura: { userId: userObject.accounts.oura.userId ? userObject.accounts.oura.userId : '' },
+    fitbit: { userId: userObject.accounts.fitbit.userId ? userObject.accounts.fitbit.userId : '' },
+    withings: { userId: userObject.accounts.withings.userId ? userObject.accounts.withings.userId : '' },
+  };
 
   return userObject;
 };

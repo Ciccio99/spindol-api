@@ -140,3 +140,7 @@ dist
 
 # Custom
 .DS_STORE
+
+# Local SSL
+server.cert
+server.key

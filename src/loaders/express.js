@@ -14,7 +14,6 @@ export default ({ app }) => {
   // Load in other middleware
   app.use(cors({
     credentials: true,
-    origin: config.corsOrigin,
   }));
   app.use(cookieParser());
   app.use(bodyParser.json());

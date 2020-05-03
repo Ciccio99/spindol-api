@@ -11,9 +11,7 @@ export default (app) => {
   route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
-      console.log(query);
       const data = await DailyDiaryServices.query(query);
-      console.log(data);
       return res.json(data);
     } catch (error) {
       return next(error);
