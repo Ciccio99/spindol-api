@@ -37,7 +37,8 @@ export default (app) => {
     if (!device || !config.devices.includes(device, 0)) {
       return next(new ErrorHandler(400, `Must include a valid device to authorize: ${config.devices}`));
     }
-    return res.json(`${config.baseUrl}/api/devices/auth/oura`);
+    // return res.json(`${config.baseUrl}/api/devices/auth/oura`);
+    return res.json(devices.oura.authorizationUri);
   });
 
   /**
