@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import sslRedirect from 'heroku-ssl-redirect';
 import config from '../config';
 import routes from '../api';
 import Logger from './logger';
@@ -12,6 +13,7 @@ export default ({ app }) => {
   // Load in morgan Req logger, Pass through Winston Stream
   app.use(morgan('combined', { stream: Logger.stream }));
   // Load in other middleware
+  app.use(sslRedirect());
   app.use(cors({
     credentials: true,
     origin: config.frontEndUri,
