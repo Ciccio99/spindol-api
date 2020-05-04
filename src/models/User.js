@@ -139,54 +139,95 @@ const userSchema = new mongoose.Schema({
   }],
   accounts: {
     withings: {
-      access_token: {
-        type: String,
-        default: '',
-      },
-      refresh_token: {
-        type: String,
-        default: '',
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+          default: 0,
+        },
       },
       userid: {
         type: String,
         default: '',
       },
-      expiration: {
-        type: Date,
+      connected: {
+        type: Boolean,
+        default: false,
       },
     },
     oura: {
-      access_token: {
-        type: String,
-        default: '',
-      },
-      refresh_token: {
-        type: String,
-        default: '',
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+        },
       },
       userid: {
         type: String,
         default: '',
       },
-      expiration: {
-        type: Date,
+      connected: {
+        type: Boolean,
+        default: false,
       },
     },
     fitbit: {
-      access_token: {
-        type: String,
-        default: '',
-      },
-      refresh_token: {
-        type: String,
-        default: '',
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+          default: 0,
+        },
       },
       userid: {
         type: String,
         default: '',
       },
-      expiration: {
-        type: Date,
+      connected: {
+        type: Boolean,
+        default: false,
       },
     },
   },
@@ -225,11 +266,9 @@ userSchema.methods.toJSON = function toJSON() {
   delete userObject.password;
   delete userObject.avatar;
   delete userObject.tokens;
-  userObject.accounts = {
-    oura: { userId: userObject.accounts.oura.userId ? userObject.accounts.oura.userId : '' },
-    fitbit: { userId: userObject.accounts.fitbit.userId ? userObject.accounts.fitbit.userId : '' },
-    withings: { userId: userObject.accounts.withings.userId ? userObject.accounts.withings.userId : '' },
-  };
+  delete userObject.accounts.oura.token;
+  delete userObject.accounts.withings.token;
+  delete userObject.accounts.fitbit.token;
 
   return userObject;
 };

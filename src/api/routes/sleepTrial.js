@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from 'express-validation';
 import SleepTrialServices from '../../services/SleepTrialServices';
 import validationSchemas from '../middlewares/validationSchemas';
-
+import middlewares from '../middlewares';
 
 const route = Router();
 
@@ -15,7 +15,7 @@ const route = Router();
 export default (app) => {
   app.use('/sleepTrial', route);
 
-  route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
+  route.get('', middlewares.auth, validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await SleepTrialServices.querySleepTrial(query);
@@ -25,7 +25,7 @@ export default (app) => {
     }
   });
 
-  route.get('/:id', validate(validationSchemas.paramsId), async (req, res, next) => {
+  route.get('/:id', middlewares.auth, validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       const { id } = req.params;
       const data = await SleepTrialServices.getSleepTrial(id);
@@ -35,7 +35,7 @@ export default (app) => {
     }
   });
 
-  route.post('/create', validate(validationSchemas.createSleepTrialSchema), async (req, res, next) => {
+  route.post('/create', middlewares.authAdmin, validate(validationSchemas.createSleepTrialSchema), async (req, res, next) => {
     try {
       const dto = { ...req.body };
       const sleepTrial = await SleepTrialServices.createSleepTrial(dto);
@@ -45,7 +45,7 @@ export default (app) => {
     }
   });
 
-  route.delete('/:id', validate(validationSchemas.paramsId), async (req, res, next) => {
+  route.delete('/:id', middlewares.authAdmin, validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       await SleepTrialServices.deleteSleepTrial(req.params.DTO.id);
       return res.status(204).send();

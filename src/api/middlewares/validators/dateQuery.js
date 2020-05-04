@@ -1,4 +1,4 @@
-import Moment from 'moment';
+import Moment from 'moment-timezone';
 import { ErrorHandler } from '../../../utils/error';
 
 const dateQuery = (req, res, next) => {

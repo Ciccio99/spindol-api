@@ -2,13 +2,14 @@ import { Router } from 'express';
 import { validate } from 'express-validation';
 import DailyDiaryServices from '../../services/DailyDiaryServices';
 import validationSchemas from '../middlewares/validationSchemas';
+import middlewares from '../middlewares';
 
 const route = Router();
 
 export default (app) => {
   app.use('/dailyDiary', route);
 
-  route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
+  route.get('', middlewares.auth, validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await DailyDiaryServices.query(query);
@@ -18,7 +19,7 @@ export default (app) => {
     }
   });
 
-  route.get('/:id', validate(validationSchemas.paramsId), async (req, res, next) => {
+  route.get('/:id', middlewares.auth, validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       const { id } = req.params;
       const data = await DailyDiaryServices.getById(id);
@@ -28,7 +29,7 @@ export default (app) => {
     }
   });
 
-  route.post('/create', validate(validationSchemas.createDailyDiary), async (req, res, next) => {
+  route.post('/create', middlewares.auth, validate(validationSchemas.createDailyDiary), async (req, res, next) => {
     try {
       const data = await DailyDiaryServices.create(req.body);
       return res.json(data);
@@ -37,7 +38,7 @@ export default (app) => {
     }
   });
 
-  route.post('/update', validate(validationSchemas.updateDailyDiary), async (req, res, next) => {
+  route.post('/update', middlewares.auth, validate(validationSchemas.updateDailyDiary), async (req, res, next) => {
     try {
       const data = await DailyDiaryServices.update(req.body);
       return res.json(data);
@@ -46,7 +47,7 @@ export default (app) => {
     }
   });
 
-  route.post('/upsert', validate(validationSchemas.createDailyDiary), async (req, res, next) => {
+  route.post('/upsert', middlewares.auth, validate(validationSchemas.createDailyDiary), async (req, res, next) => {
     try {
       const data = await DailyDiaryServices.upsert(req.body);
       return res.json(data);

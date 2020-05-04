@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const authAdmin = async (req, res, next) => {
   try {
-    // const token = req.header('Authorization').replace('Bearer ', '');
     const token = req.cookies[config.authCookieName];
     if (!token) {
       throw new ErrorHandler(401, 'Please Authenticate');

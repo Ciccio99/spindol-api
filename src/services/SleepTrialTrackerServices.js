@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import SleepTrialTracker from '../models/SleepTrialTracker';
 import { ErrorHandler } from '../utils/error';
 
@@ -11,7 +11,7 @@ const createSleepTrialTracker = async (dto) => {
   if (existingTracker) {
     throw new ErrorHandler(409, 'Sleep trial tracker for this sleep trial already exists.');
   }
-  
+
   const sleepTrialTracker = new SleepTrialTracker({ ...dto });
   await sleepTrialTracker.save();
   await sleepTrialTracker.populate('sleepTrial').execPopulate();
@@ -27,6 +27,7 @@ const querySleepTrialTracker = async (query) => {
   const {
     match, sort, limit, skip,
   } = query;
+
   const sleepTrialTrackers = await SleepTrialTracker.find(match)
     .populate('sleepTrial')
     .sort(sort)

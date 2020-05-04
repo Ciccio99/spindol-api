@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { validate } from 'express-validation';
 import validationSchemas from '../middlewares/validationSchemas';
 import SleepSummaryServices from '../../services/SleepSummaryServices';
+import middlewares from '../middlewares';
 
 const route = Router();
 
@@ -14,7 +15,7 @@ const route = Router();
 export default (app) => {
   app.use('/sleepSummary', route);
 
-  route.get('', validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
+  route.get('', middlewares.auth, validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await SleepSummaryServices.query(query);
@@ -24,7 +25,7 @@ export default (app) => {
     }
   });
 
-  route.get('/:id', validate(validationSchemas.paramsId), async (req, res, next) => {
+  route.get('/:id', middlewares.auth, validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       const { id } = req.params;
       const data = await SleepSummaryServices.getById(id);
@@ -34,7 +35,7 @@ export default (app) => {
     }
   });
 
-  route.post('/create', validate(validationSchemas.sleepSummaryCreate), async (req, res, next) => {
+  route.post('/create', middlewares.auth, validate(validationSchemas.sleepSummaryCreate), async (req, res, next) => {
     try {
       const data = await SleepSummaryServices.create(req.body);
       return res.json({ data });
@@ -43,7 +44,7 @@ export default (app) => {
     }
   });
 
-  route.post('/update', validate(validationSchemas.sleepSummaryUpdate), async (req, res, next) => {
+  route.post('/update', middlewares.auth, validate(validationSchemas.sleepSummaryUpdate), async (req, res, next) => {
     try {
       const data = await SleepSummaryServices.update(req.body);
       return res.json({ data });
