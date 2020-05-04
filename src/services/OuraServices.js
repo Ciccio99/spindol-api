@@ -11,6 +11,7 @@ const getSleepSummary = async (user, date) => {
     throw new Error('User object is required');
   }
   await OauthServices.refreshDeviceToken(user, DEVICE_NAME);
+
   const searchDate = moment(date).format('YYYY-MM-DD');
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
     params: {
@@ -28,6 +29,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
     throw new Error('User object is required');
   }
   await OauthServices.refreshDeviceToken(user, DEVICE_NAME);
+
   let searchDate;
   if (date) {
     searchDate = moment(date).format('YYYY-MM-DD');
@@ -48,6 +50,9 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
 const syncSleepSummary = async (user, date = undefined) => {
   if (!user) {
     throw new Error('User object is required');
+  }
+  if (!user.accounts[DEVICE_NAME].connected) {
+    throw new Error(`No accounts/device registered for ${DEVICE_NAME}`);
   }
   const limit = 1;
   const sort = { date: 'desc' };
