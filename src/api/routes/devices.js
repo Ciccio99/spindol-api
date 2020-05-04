@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { validate } from 'express-validation';
-import DeviceServices from '../../services/DeviceServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import oauth from '../../loaders/oauth';
 import config from '../../config';
 import { ErrorHandler } from '../../utils/error';
 import Logger from '../../loaders/logger';
 import UserServices from '../../services/UserServices';
+import OuraServices from '../../services/OuraServices';
 import middlewares from '../middlewares';
 
 const devices = {
@@ -27,6 +27,22 @@ export default (app) => {
     }
     return res.json(`${config.baseUrl}/api/devices/auth/oura`);
     // return res.json(devices.oura.authorizationUri);
+  });
+
+
+  /**
+   * ~~~~~~~~~~~~~~~~~~~~~
+   * Sync Sleep per Device
+   * ~~~~~~~~~~~~~~~~~~~~~
+   */
+
+  route.get('/sync/oura', middlewares.auth, async (req, res, next) => {
+    try {
+      await OuraServices.syncSleepSummary(req.user);
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
   });
 
   /**
@@ -63,6 +79,13 @@ export default (app) => {
       const token = devices.oura.oauth2.accessToken.create(result);
 
       await UserServices.setDeviceToken(req.user, 'oura', { ...token.token });
+
+      try {
+        OuraServices.syncSleepSumamry(req.user);
+      } catch (error) {
+        Logger.error(error.message);
+      }
+
 
       res.redirect(`${config.frontEndUri}/settings`);
     } catch (error) {

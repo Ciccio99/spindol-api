@@ -50,12 +50,6 @@ const setDeviceToken = async (user, device, token) => {
 
   user.accounts[device].token = { ...token };
   user.accounts[device].connected = true;
-  try {
-    OuraServices.syncSleepSumary(user);
-  } catch (error) {
-    Logger.error(error.message);
-  }
-
 
   await user.save();
 };

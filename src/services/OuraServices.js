@@ -45,7 +45,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   return data.sleep;
 };
 
-const syncSleepSumary = async (user, date = undefined) => {
+const syncSleepSummary = async (user, date = undefined) => {
   if (!user) {
     throw new Error('User object is required');
   }
@@ -102,16 +102,12 @@ const syncSleepSumary = async (user, date = undefined) => {
     owner: user._id,
   }));
 
-  try {
-    const results = await SleepSummary.insertMany(formattedDocuments);
-    Logger.info(`Completed syncing ${results.length} sleep summary documents from Oura for ${user.email}`);
-  } catch (error) {
-    Logger.error(error.message);
-  }
+  const results = await SleepSummary.insertMany(formattedDocuments);
+  Logger.info(`Completed syncing ${results.length} sleep summary documents from Oura for ${user.email}`);
 };
 
 export default {
   getSleepSummary,
   getSleepSummaryHistory,
-  syncSleepSumary,
+  syncSleepSummary,
 };
