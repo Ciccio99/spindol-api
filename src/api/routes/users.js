@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validate } from 'express-validation';
+import moment from 'moment-timezone';
 import config from '../../config';
 import validators from '../middlewares/validators';
 import UserServices from '../../services/UserServices';
@@ -15,7 +16,12 @@ export default (app) => {
   route.post('/login', validators.userLogin, async (req, res, next) => {
     try {
       const { user, token } = await UserServices.userLogin(req.userDTO);
-      res.cookie(config.authCookieName, token, { httpOnly: true, expires: 0 });
+      const options = {
+        httpOnly: true,
+        expires: moment().add(2, 'months').toDate(),
+        secure: process.env.NODE_ENV !== 'development',
+      };
+      res.cookie(config.authCookieName, token, options);
       return res.json({ user });
     } catch (error) {
       return next(error);
@@ -25,6 +31,7 @@ export default (app) => {
   route.post('/logout', middlewares.auth, async (req, res, next) => {
     try {
       await UserServices.userLogout(req.user, req.token);
+      res.clearCookie(config.authCookieName);
       return res.status(204).send();
     } catch (error) {
       return next(error);

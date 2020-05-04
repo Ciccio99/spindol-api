@@ -1,6 +1,4 @@
 import User from '../models/User';
-import OuraServices from './OuraServices';
-import Logger from '../loaders/logger';
 
 const userLogin = async (userDTO) => {
   const user = await User.findByCredentials(userDTO.email, userDTO.password);
