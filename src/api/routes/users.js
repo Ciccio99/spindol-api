@@ -20,7 +20,7 @@ export default (app) => {
         httpOnly: true,
         expires: moment().add(2, 'months').toDate(),
         secure: process.env.NODE_ENV !== 'development',
-        sameSite: false,
+        sameSite: 'None',
       };
       res.cookie(config.authCookieName, token, options);
       return res.json({ user });
