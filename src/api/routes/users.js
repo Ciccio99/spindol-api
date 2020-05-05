@@ -16,14 +16,14 @@ export default (app) => {
   route.post('/login', validators.userLogin, async (req, res, next) => {
     try {
       const { user, token } = await UserServices.userLogin(req.userDTO);
-      const options = {
-        httpOnly: true,
-        expires: moment().add(2, 'months').toDate(),
-        secure: process.env.NODE_ENV !== 'development',
-        sameSite: 'None',
-      };
-      res.cookie(config.authCookieName, token, options);
-      return res.json({ user });
+      // const options = {
+      //   httpOnly: true,
+      //   expires: moment().add(2, 'months').toDate(),
+      //   secure: process.env.NODE_ENV !== 'development',
+      //   sameSite: 'None',
+      // };
+      // res.cookie(config.authCookieName, token, options);
+      return res.json({ user, token });
     } catch (error) {
       return next(error);
     }
