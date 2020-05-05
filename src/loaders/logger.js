@@ -2,6 +2,16 @@ import appRoot from 'app-root-path';
 
 const winston = require('winston');
 
+const errorStackFormat = winston.format((info) => {
+  if (info instanceof Error) {
+    return Object.assign({}, info, {
+      stack: info.stack,
+      message: info.message
+    });
+  }
+  return info;
+});
+
 const options = {
   file: {
     level: 'info',

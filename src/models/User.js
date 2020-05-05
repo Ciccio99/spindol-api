@@ -16,9 +16,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
-    validate(value) {
+    async validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error('Email is invalid.');
+        throw new ErrorHandler(400, 'Email is invalid.');
+      }
+      if (this.isNew && await User.findOne({ email: value })) {
+        throw new ErrorHandler(400, 'Email already in use.');
       }
     },
   },
@@ -123,6 +126,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    enum: ['user', 'admin'],
     default: 'user',
     lowercase: true,
     trim: true,
@@ -135,36 +139,110 @@ const userSchema = new mongoose.Schema({
   }],
   accounts: {
     withings: {
-      access_token: {
-        type: String,
-      },
-      refresh_token: {
-        type: String,
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+          default: 0,
+        },
       },
       userid: {
-        type: Number,
+        type: String,
+        default: '',
       },
-      expiration: {
-        type: Date,
+      connected: {
+        type: Boolean,
+        default: false,
       },
     },
-    withings_temp: {
-      access_token: {
-        type: String,
-      },
-      refresh_token: {
-        type: String,
+    oura: {
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+        },
       },
       userid: {
-        type: Number,
+        type: String,
+        default: '',
       },
-      expiration: {
-        type: Date,
+      connected: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    fitbit: {
+      token: {
+        access_token: {
+          type: String,
+          default: '',
+        },
+        refresh_token: {
+          type: String,
+          default: '',
+        },
+        token_type: {
+          type: String,
+          default: '',
+        },
+        expires_at: {
+          type: Date,
+        },
+        expires_in: {
+          type: Number,
+          default: 0,
+        },
+      },
+      userid: {
+        type: String,
+        default: '',
+      },
+      connected: {
+        type: Boolean,
+        default: false,
       },
     },
   },
+  lastLogin: {
+    type: Date,
+  },
 }, {
   timestamps: true,
+});
+
+// Connect User to their Sleep Summary data
+userSchema.virtual('sleepTrialTrackers', {
+  ref: 'SleepTrialTracker',
+  localField: '_id',
+  foreignField: 'owner',
 });
 
 // Connect User to their Sleep Summary data
@@ -174,8 +252,9 @@ userSchema.virtual('sleepSummaries', {
   foreignField: 'owner',
 });
 
-userSchema.virtual('sleep', {
-  ref: 'Sleep',
+// Connect User to their Daily Diary data
+userSchema.virtual('dailyDiaries', {
+  ref: 'DailyDiary',
   localField: '_id',
   foreignField: 'owner',
 });
@@ -187,6 +266,9 @@ userSchema.methods.toJSON = function toJSON() {
   delete userObject.password;
   delete userObject.avatar;
   delete userObject.tokens;
+  delete userObject.accounts.oura.token;
+  delete userObject.accounts.withings.token;
+  delete userObject.accounts.fitbit.token;
 
   return userObject;
 };
@@ -226,6 +308,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
   if (!isMatch) {
     throw new ErrorHandler(401, 'Unable to authenticate');
   }
+
+  user.lastLogin = new Date();
+  await user.save();
 
   return user;
 };

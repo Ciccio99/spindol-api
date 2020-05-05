@@ -38,6 +38,20 @@ const usersGet = async () => {
   return users;
 };
 
+const setDeviceToken = async (user, device, token) => {
+  if (!user) {
+    throw new Error('User object is required');
+  }
+  if (!device) {
+    throw new Error('Missing device to save token towards. [oura, withings, fitbit]');
+  }
+
+  user.accounts[device].token = { ...token };
+  user.accounts[device].connected = true;
+
+  await user.save();
+};
+
 export default {
   userLogin,
   userLogout,
@@ -45,4 +59,5 @@ export default {
   userEdit,
   userDelete,
   usersGet,
+  setDeviceToken,
 };

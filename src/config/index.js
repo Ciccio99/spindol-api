@@ -12,10 +12,19 @@ export default {
   databaseURL: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET,
   authCookieName: process.env.AUTH_COOKIE_NAME,
+  baseUrl: process.env.BASE_URL,
+  frontEndUri: process.env.FRONT_END_URI,
   logs: {
     level: 'debug',
   },
   api: {
     prefix: '/api',
   },
+  oauth2: {
+    oura: {
+      client_id: process.env.OURA_CLIENT_ID,
+      client_secret: process.env.OURA_CLIENT_SECRET,
+    },
+  },
+  devices: ['oura', 'withings', 'fitbit'],
 };
