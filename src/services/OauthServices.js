@@ -1,4 +1,5 @@
 import oauth from '../loaders/oauth';
+import UserServices from './UserServices';
 
 const refreshDeviceToken = async (user, device) => {
   if (!user) {
@@ -12,11 +13,12 @@ const refreshDeviceToken = async (user, device) => {
 
   const ouraOauth = oauth.oura();
   let token = ouraOauth.oauth2.accessToken.create({ ...user.accounts[device].token });
+  console.log(token);
   if (token.expired(EXPIRATION_WINDOW_IN_SECONDS)) {
     try {
       token = await token.refresh();
+      await UserServices.setDeviceToken(user, device, { ...token.token });
     } catch (error) {
-      console.error(error);
       throw new Error(error);
       // throw new Error(`Error refreshing access token: ${error.message}`);
     }
