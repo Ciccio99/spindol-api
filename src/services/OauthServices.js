@@ -16,6 +16,7 @@ const refreshDeviceToken = async (user, device) => {
     try {
       token = await token.refresh();
     } catch (error) {
+      console.error(error);
       throw new Error(error);
       // throw new Error(`Error refreshing access token: ${error.message}`);
     }
