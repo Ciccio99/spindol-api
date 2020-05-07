@@ -23,7 +23,8 @@ const validationSchemas = {
     body: Joi.object({
       email: Joi.string().email().trim().required()
         .messages({ 'string.email': 'Invalid email' }),
-      password: Joi.string().min(7).trim().required(),
+      password: Joi.string().min(7).trim().invalid('password')
+        .required(),
       passwordConfirm: Joi.any().valid(Joi.ref('password')).required()
         .messages({ 'any.only': 'Passwords must match' }),
     }),
@@ -131,13 +132,13 @@ const validationSchemas = {
     body: Joi.object({
       email: Joi.string().email().trim(),
       name: Joi.string().trim(),
-      // password: Joi.string().min(7).trim(),
-      // confirmPassword: Joi.when('password', {
-      //   is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
-      // }),
-      // currentPassword: Joi.when('password', {
-      //   is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
-      // }),
+      password: Joi.string().min(7).trim(),
+      confirmPassword: Joi.when('password', {
+        is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+      }),
+      currentPassword: Joi.when('password', {
+        is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+      }),
     }),
   },
 };

@@ -1,4 +1,5 @@
 import User from '../models/User';
+import { ErrorHandler } from '../utils/error';
 
 const userLogin = async (userDTO) => {
   const user = await User.findByCredentials(userDTO.email, userDTO.password);
@@ -27,20 +28,20 @@ const userEdit = async (user, userDTO) => {
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
-    throw new Error(`Invalid update parameters sent. Currently accepting ${allowedUpdates.join(', ')}`);
+    throw new ErrorHandler(400, `Invalid update parameters sent. Currently accepting ${allowedUpdates.join(', ')}`);
   }
 
   if (userDTO.password !== userDTO.confirmPassword) {
-    throw new Error('Passwords must match.');
+    throw new ErrorHandler(400, 'Passwords must match.');
   }
 
   if (userDTO.password) {
-    if (user.checkPassword(userDTO.currentPassword)) {
-      throw new Error('Current password is invalid.');
-    } else if (user.checkPassword(userDTO.password)) {
-      throw new Error('New password cannot match current password.');
+    if (!(await user.checkPassword(userDTO.currentPassword))) {
+      throw new ErrorHandler(400, 'Current password is invalid.');
+    } else if (await user.checkPassword(userDTO.password)) {
+      throw new ErrorHandler(400, 'New password cannot match current password.');
     } else {
-      updates = updates.filter((update) => update !== 'password' || update !== 'confirmPassword');
+      updates = updates.filter((update) => update !== 'currentPassword' || update !== 'confirmPassword');
     }
   }
 

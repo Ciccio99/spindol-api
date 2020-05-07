@@ -288,12 +288,7 @@ userSchema.methods.checkPassword = async function checkPassword(password) {
   const user = this;
 
   const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    throw new ErrorHandler(401, 'Incorrect password');
-  }
-
-  return true;
+  return isMatch;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {
