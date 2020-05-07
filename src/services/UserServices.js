@@ -21,11 +21,35 @@ const userRegister = async (userDTO) => {
 };
 
 const userEdit = async (user, userDTO) => {
-  const updates = Object.keys(userDTO);
+  const allowedUpdates = ['name', 'email', 'password', 'currentPassword', 'confirmPassword'];
+
+  let updates = Object.keys(userDTO);
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+  if (!isValidOperation) {
+    throw new Error(`Invalid update parameters sent. Currently accepting ${allowedUpdates.join(', ')}`);
+  }
+
+  if (userDTO.password !== userDTO.confirmPassword) {
+    throw new Error('Passwords must match.');
+  }
+
+  if (userDTO.password) {
+    if (user.checkPassword(userDTO.currentPassword)) {
+      throw new Error('Current password is invalid.');
+    } else if (user.checkPassword(userDTO.password)) {
+      throw new Error('New password cannot match current password.');
+    } else {
+      updates = updates.filter((update) => update !== 'password' || update !== 'confirmPassword');
+    }
+  }
+
   updates.forEach((update) => {
     user[update] = userDTO[update];
   });
+
   const editedUser = await user.save();
+
   return editedUser;
 };
 
@@ -36,6 +60,11 @@ const userDelete = async (user) => {
 const usersGet = async () => {
   const users = await User.find({ active: true });
   return users;
+};
+
+const getUser = async (_id) => {
+  const user = await User.findById(_id);
+  return user;
 };
 
 const setDeviceToken = async (user, device, token) => {
@@ -60,4 +89,5 @@ export default {
   userDelete,
   usersGet,
   setDeviceToken,
+  getUser,
 };

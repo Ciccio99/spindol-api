@@ -127,6 +127,19 @@ const validationSchemas = {
       owner: Joi.objectId(),
     }).unknown(true),
   },
+  userUpdate: {
+    body: Joi.object({
+      email: Joi.string().email().trim(),
+      name: Joi.string().trim(),
+      // password: Joi.string().min(7).trim(),
+      // confirmPassword: Joi.when('password', {
+      //   is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+      // }),
+      // currentPassword: Joi.when('password', {
+      //   is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+      // }),
+    }),
+  },
 };
 
 export default validationSchemas;

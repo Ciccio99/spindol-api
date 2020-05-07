@@ -9,6 +9,8 @@ import UserServices from '../../services/UserServices';
 import OuraServices from '../../services/OuraServices';
 import middlewares from '../middlewares';
 
+const jwt = require('jsonwebtoken');
+
 const devices = {
   oura: {
     ...oauth.oura(),
@@ -25,8 +27,12 @@ export default (app) => {
     if (!device || !config.devices.includes(device, 0)) {
       return next(new ErrorHandler(400, `Must include a valid device to authorize: ${config.devices}`));
     }
-    return res.json(`${config.baseUrl}/api/devices/auth/oura`);
-    // return res.json(devices.oura.authorizationUri);
+    const authorizationUri = devices.oura.oauth2.authorizationCode.authorizeURL({
+      redirect_uri: devices.oura.redirectUri,
+      state: jwt.sign({ _id: req.user._id.toString() }, process.env.JWT_SECRET),
+    });
+    // return res.json(`${config.baseUrl}/api/devices/auth/oura`);
+    return res.json(authorizationUri);
   });
 
 
@@ -51,6 +57,7 @@ export default (app) => {
    * ~~~~~~~~~~~~~~~~~~~~~
    */
 
+  // TODO: confirm that this may not beed needed Anymore
   route.get('/auth/oura', middlewares.auth, (req, res, next) => {
     res.redirect(devices.oura.authorizationUri);
   });
@@ -70,22 +77,23 @@ export default (app) => {
     }
   });
 
-  route.get('/auth/oura/callback', middlewares.auth, async (req, res, next) => {
-    const { code } = req.query;
+  route.get('/auth/oura/callback', async (req, res, next) => {
+    const { code, state } = req.query;
     const options = { code, redirect_uri: devices.oura.redirectUri };
 
     try {
+      const decoded = jwt.verify(state, process.env.JWT_SECRET);
+      const user = await UserServices.getUser(decoded._id);
+      if (!user) {
+        throw new Error('No user ID provided in auth/oura/callback JWT state');
+      }
       const result = await devices.oura.oauth2.authorizationCode.getToken(options);
       const token = devices.oura.oauth2.accessToken.create(result);
 
-      await UserServices.setDeviceToken(req.user, 'oura', { ...token.token });
+      await UserServices.setDeviceToken(user, 'oura', { ...token.token });
 
-      try {
-        OuraServices.syncSleepSumamry(req.user);
-      } catch (error) {
-        Logger.error(error.message);
-      }
-
+      // Sync Data asynchronously
+      OuraServices.syncSleepSummary(user);
 
       res.redirect(`${config.frontEndUri}/settings`);
     } catch (error) {

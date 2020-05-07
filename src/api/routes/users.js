@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { validate } from 'express-validation';
-import moment from 'moment-timezone';
 import config from '../../config';
 import validators from '../middlewares/validators';
 import UserServices from '../../services/UserServices';
@@ -51,9 +50,9 @@ export default (app) => {
   });
 
   // ME
-  route.patch('/me', middlewares.auth, validators.userEdit, async (req, res, next) => {
+  route.patch('/me', middlewares.auth, validate(validationSchemas.userUpdate), async (req, res, next) => {
     try {
-      const user = await UserServices.userEdit(req.user, req.userDTO);
+      const user = await UserServices.userEdit(req.user, req.body);
       return res.json({ user });
     } catch (error) {
       return next(error);
