@@ -75,28 +75,29 @@ const syncSleepSummary = async (user, date = undefined) => {
     return;
   }
 
-  const timezoneMap = {};
+  // const timezoneMap = {};
 
-  const getTimezoneName = (offset) => {
-    const stringNum = offset.toString(10);
-    if (timezoneMap[stringNum]) return timezoneMap[stringNum];
+  // const getTimezoneName = (offset) => {
+  //   const stringNum = offset.toString(10);
+  //   if (timezoneMap[stringNum]) return timezoneMap[stringNum];
 
-    const offsetName = moment.tz.names().find((timezoneName) => {
-      // eslint-disable-next-line no-underscore-dangle
-      if (offset === moment.tz(timezoneName)._offset) {
-        timezoneMap[offset.toString(10)] = timezoneName;
-        return true;
-      }
-      return false;
-    });
-    return offsetName;
-  };
+  //   const offsetName = moment.tz.names().find((timezoneName) => {
+  //     // eslint-disable-next-line no-underscore-dangle
+  //     if (offset === moment.tz(timezoneName)._offset) {
+  //       timezoneMap[offset.toString(10)] = timezoneName;
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   return offsetName;
+  // };
 
   let formattedDocuments = sleepSummaries.filter((summary) => summary.is_longest === 1);
 
   formattedDocuments = formattedDocuments.map((summary) => ({
     date: moment(summary.summary_date).toISOString(),
-    timezone: getTimezoneName(summary.timezone),
+    // timezone: getTimezoneName(summary.timezone),
+    timezoneOffset: summary.timezone,
     startDateTime: moment(summary.bedtime_start).toISOString(),
     endDateTime: moment(summary.bedtime_end).toISOString(),
     awakeDuration: summary.awake,

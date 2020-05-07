@@ -17,7 +17,10 @@ export default (app) => {
 
   route.get('', middlewares.auth, validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
-      const query = JSON.parse(req.query.query);
+      let query = {};
+      if (req.query.query) {
+        query = JSON.parse(req.query.query);
+      }
       const data = await SleepSummaryServices.query(query);
       return res.json(data);
     } catch (error) {

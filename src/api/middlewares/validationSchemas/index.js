@@ -110,7 +110,7 @@ const validationSchemas = {
   sleepSummaryCreate: {
     body: Joi.object({
       date: Joi.date().iso().required(),
-      timezone: Joi.string().required(),
+      timezoneOffset: Joi.number().required(),
       startDateTime: Joi.date().iso().required(),
       endDateTime: Joi.date().iso().required(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual').required(),
@@ -121,7 +121,7 @@ const validationSchemas = {
     body: Joi.object({
       _id: Joi.objectId().required(),
       date: Joi.date().iso(),
-      timezone: Joi.string(),
+      timezoneOffset: Joi.number(),
       startDateTime: Joi.date().iso(),
       endDateTime: Joi.date().iso(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual'),
