@@ -1,42 +1,44 @@
 import DailyDiary from '../models/DailyDiary';
 
 export default {
-  async create(dto) {
-    const dailyDiary = new DailyDiary({ ...dto });
+  async create(dto, user) {
+    const dailyDiary = new DailyDiary({ ...dto, owner: user._id });
     await dailyDiary.save();
     return dailyDiary;
   },
-  async getById(id) {
-    const dailyDiary = await DailyDiary.findById(id);
+  async getById(id, user) {
+    const dailyDiary = await DailyDiary.findOne({ _id: id, owner: user._id });
     return dailyDiary;
   },
-  async query(query) {
+  async query(query, user) {
     const {
       match, sort, limit, skip,
     } = query;
-    const dailyDiarys = await DailyDiary.find(match)
-      .sort(sort)
-      .limit(limit)
-      .skip(skip);
-    return dailyDiarys;
+    await user.populate({
+      path: 'dailyDiaries',
+      match,
+      options: { sort, skip, limit },
+    }).execPopulate();
+
+    return user.dailyDiaries;
   },
-  async update(dto) {
+  async update(dto, user) {
     const dailyDiary = await DailyDiary
-      .findByIdAndUpdate(dto._id, { ...dto }, { new: true });
+      .findOneAndUpdate({ _id: dto._id, owner: user._id }, { ...dto }, { new: true });
     return dailyDiary;
   },
-  async upsert(dto) {
+  async upsert(dto, user) {
     const options = { new: true };
     const date = new Date(dto.date);
 
     const data = await DailyDiary.findOneAndUpdate(
-      { date },
+      { date, owner: user._id },
       { ...dto },
       options,
     );
 
     if (!data) {
-      const dailyDiary = new DailyDiary({ ...dto });
+      const dailyDiary = new DailyDiary({ ...dto, owner: user._id });
       await dailyDiary.save();
       return dailyDiary;
     }

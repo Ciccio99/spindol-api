@@ -21,7 +21,7 @@ export default (app) => {
       if (req.query.query) {
         query = JSON.parse(req.query.query);
       }
-      const data = await SleepSummaryServices.query(query);
+      const data = await SleepSummaryServices.query(query, req.user);
       return res.json(data);
     } catch (error) {
       return next(error);
@@ -31,7 +31,7 @@ export default (app) => {
   route.get('/:id', middlewares.auth, validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       const { id } = req.params;
-      const data = await SleepSummaryServices.getById(id);
+      const data = await SleepSummaryServices.getById(id, req.user);
       return res.json({ data });
     } catch (error) {
       return next(error);
@@ -40,7 +40,7 @@ export default (app) => {
 
   route.post('/create', middlewares.auth, validate(validationSchemas.sleepSummaryCreate), async (req, res, next) => {
     try {
-      const data = await SleepSummaryServices.create(req.body);
+      const data = await SleepSummaryServices.create(req.body, req.user);
       return res.json({ data });
     } catch (error) {
       return next(error);
@@ -49,7 +49,7 @@ export default (app) => {
 
   route.post('/update', middlewares.auth, validate(validationSchemas.sleepSummaryUpdate), async (req, res, next) => {
     try {
-      const data = await SleepSummaryServices.update(req.body);
+      const data = await SleepSummaryServices.update(req.body, req.user);
       return res.json({ data });
     } catch (error) {
       return next(error);
