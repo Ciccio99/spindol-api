@@ -8,7 +8,6 @@ import mongoose from 'mongoose';
 const dailyDiarySchema = new mongoose.Schema({
   date: {
     type: Date,
-    unique: true,
   },
   mood: {
     type: String,
