@@ -1,48 +1,140 @@
 import DailyDiary from '../models/DailyDiary';
+import SleepTrialTracker from '../models/SleepTrialTracker';
 
-export default {
-  async create(dto, user) {
-    const dailyDiary = new DailyDiary({ ...dto, owner: user._id });
-    await dailyDiary.save();
-    return dailyDiary;
-  },
-  async getById(id, user) {
-    const dailyDiary = await DailyDiary.findOne({ _id: id, owner: user._id });
-    return dailyDiary;
-  },
-  async query(query, user) {
-    const {
-      match, sort, limit, skip,
-    } = query;
-    await user.populate({
-      path: 'dailyDiaries',
-      match,
-      options: { sort, skip, limit },
+const create = async (dto, user) => {
+  let ssts = await SleepTrialTracker.find({
+    active: true,
+    owner: user._id,
+    startDate: { $lte: dto.date },
+  }).select('_id').exec();
+  ssts = ssts.map((sst) => sst._id);
+  const dailyDiary = new DailyDiary({
+    ...dto,
+    sleepTrialTrackers: ssts,
+    owner: user._id,
+  });
+  await dailyDiary.save();
+
+  return dailyDiary;
+};
+
+const getById = async (id, user) => {
+  const dailyDiary = await DailyDiary.findOne({ _id: id, owner: user._id });
+  return dailyDiary;
+};
+
+const getByDate = async (date, user) => {
+  const dd = await DailyDiary.findOne({ date, owner: user._id });
+  return dd;
+};
+
+const getsertByDate = async (date, user) => {
+  let dd = await getByDate(date, user);
+  if (!dd) {
+    dd = await create({ date }, user);
+  }
+
+  await dd.populate('sleepSummary')
+    .populate({
+      path: 'sleepTrialTrackers',
+      populate: { path: 'sleepTrial' },
     }).execPopulate();
 
-    return user.dailyDiaries;
-  },
-  async update(dto, user) {
-    const dailyDiary = await DailyDiary
-      .findOneAndUpdate({ _id: dto._id, owner: user._id }, { ...dto }, { new: true });
-    return dailyDiary;
-  },
-  async upsert(dto, user) {
-    const options = { new: true };
-    const date = new Date(dto.date);
+  return dd;
+};
 
-    const data = await DailyDiary.findOneAndUpdate(
-      { date, owner: user._id },
-      { ...dto },
-      options,
-    );
+const query = async (queryObj, user) => {
+  const {
+    match, sort, limit, skip,
+  } = queryObj;
+  const dailyDiaries = await DailyDiary.find({ ...match, owner: user._id })
+    .populate('sleepSummary')
+    .populate({
+      path: 'sleepTrialTrackers',
+      populate: { path: 'sleepTrial' },
+    })
+    .sort(sort)
+    .limit(limit)
+    .skip(skip)
+    .exec();
 
-    if (!data) {
-      const dailyDiary = new DailyDiary({ ...dto, owner: user._id });
-      await dailyDiary.save();
-      return dailyDiary;
+  return dailyDiaries;
+  // await user.populate({
+  //   path: 'dailyDiaries',
+  //   populate: { path: 'sleepTrialTrackers' },
+  //   match,
+  //   options: { sort, skip, limit },
+  // }).execPopulate();
+
+  // return user.dailyDiaries;
+};
+
+const update = async (dto, user) => {
+  const dailyDiary = await DailyDiary.findOneAndUpdate(
+    { _id: dto._id, owner: user._id },
+    { ...dto }, { new: true },
+  );
+  return dailyDiary;
+};
+
+const upsert = async (dto, user) => {
+  const options = { new: true };
+  const date = new Date(dto.date);
+
+  let dd = await DailyDiary.findOneAndUpdate(
+    { date, owner: user._id },
+    { ...dto },
+    options,
+  );
+
+  if (!dd) {
+    dd = await create(dto, user);
+  }
+
+  await dd.populate('sleepSummary')
+    .populate({
+      path: 'sleepTrialTrackers',
+      populate: { path: 'sleepTrial' },
+    }).execPopulate();
+
+
+  return dd;
+};
+
+const upsertSleepSummary = async (ss, user) => {
+  let dd = await getByDate(ss.date, user);
+  if (dd) {
+    dd.sleepSummary = ss._id;
+    await dd.save();
+  } else {
+    dd = await create({ date: ss.date, sleepSummary: ss._id }, user);
+  }
+  return dd;
+};
+
+const upsertSleepTrialTracker = async (sst, user) => {
+  let dd = await getByDate(sst.startDate, user);
+  if (dd) {
+    dd.sleepTrialTrackers.push(sst._id);
+    await dd.save();
+  } else {
+    dd = await create({ date: sst.startDate }, user);
+    if (!(dd.sleepTrialTrackers.includes(sst._id))) {
+      dd.sleepTrialTrackers.push(sst._id);
+      await dd.save();
     }
+  }
+  return dd;
+};
 
-    return data;
-  },
+export default {
+  create,
+  getById,
+  getByDate,
+  getsertByDate,
+  query,
+  update,
+  upsert,
+  upsertSleepSummary,
+  upsertSleepTrialTracker,
 };

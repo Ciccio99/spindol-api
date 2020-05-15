@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import SleepTrialTracker from '../models/SleepTrialTracker';
+import DailyDiaryServices from './DailyDiaryServices';
 import { ErrorHandler } from '../utils/error';
 
 const createSleepTrialTracker = async (dto, user) => {
@@ -14,6 +15,7 @@ const createSleepTrialTracker = async (dto, user) => {
 
   const sleepTrialTracker = new SleepTrialTracker({ ...dto, owner: user._id });
   await sleepTrialTracker.save();
+  await DailyDiaryServices.upsertSleepTrialTracker(sleepTrialTracker, user);
   await sleepTrialTracker.populate('sleepTrial').execPopulate();
   return sleepTrialTracker;
 };

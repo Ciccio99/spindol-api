@@ -56,7 +56,6 @@ const validationSchemas = {
           completed: Joi.boolean(),
         }),
       })),
-      owner: Joi.objectId().required(),
     }),
   },
   updateSleepTrialTracker: {
@@ -74,7 +73,6 @@ const validationSchemas = {
           completed: Joi.boolean(),
         }),
       })),
-      owner: Joi.objectId(),
     }),
   },
   checkIn: {
@@ -91,7 +89,6 @@ const validationSchemas = {
       date: Joi.date().iso().required(),
       mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
       tags: Joi.array().items(Joi.string()),
-      owner: Joi.objectId(),
     }),
   },
   updateDailyDiary: {
@@ -114,7 +111,6 @@ const validationSchemas = {
       startDateTime: Joi.date().iso().required(),
       endDateTime: Joi.date().iso().required(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual').required(),
-      owner: Joi.objectId().required(),
     }).unknown(true),
   },
   sleepSummaryUpdate: {
@@ -125,7 +121,6 @@ const validationSchemas = {
       startDateTime: Joi.date().iso(),
       endDateTime: Joi.date().iso(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual'),
-      owner: Joi.objectId(),
     }).unknown(true),
   },
   userUpdate: {
@@ -134,10 +129,12 @@ const validationSchemas = {
       name: Joi.string().trim(),
       password: Joi.string().min(7).trim(),
       confirmPassword: Joi.when('password', {
-        is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+        is: Joi.exist(),
+        then: Joi.string().trim().required().valid(Joi.ref('password')),
       }),
       currentPassword: Joi.when('password', {
-        is: Joi.string().trim().not(''), then: Joi.string().trim().required(),
+        is: Joi.exist(),
+        then: Joi.string().trim().required(),
       }),
     }),
   },

@@ -48,13 +48,6 @@ const sleepTrialSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Connect SleepTrial to any SleepTrialTrackers
-sleepTrialSchema.virtual('sleepTrial', {
-  ref: 'SleepTrial',
-  localField: '_id',
-  foreignField: 'sleepTrial',
-});
-
 const SleepTrial = mongoose.model('SleepTrial', sleepTrialSchema);
 
 export default SleepTrial;

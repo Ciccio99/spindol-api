@@ -1,4 +1,5 @@
 import SleepSummary from '../models/SleepSummary';
+import DailyDiaryServices from './DailyDiaryServices';
 
 export default {
   async getById(id, user) {
@@ -19,7 +20,15 @@ export default {
   async create(dto, user) {
     const sleepSummary = new SleepSummary({ ...dto, owner: user._id });
     await sleepSummary.save();
+    await DailyDiaryServices.upsertSleepSummary(sleepSummary, user);
     return sleepSummary;
+  },
+  async createMany(sleepSummaryArr, user) {
+    const sleepSummaries = sleepSummaryArr.map(async (ss) => {
+      const sleepSummary = await this.create(ss, user);
+      return sleepSummary;
+    });
+    return sleepSummaries;
   },
   async update(dto, user) {
     const sleepSummary = await SleepSummary.findByIdAndUpdate(
