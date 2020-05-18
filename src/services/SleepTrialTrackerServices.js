@@ -48,7 +48,7 @@ const updateSleepTrialTracker = async (dto, user) => {
 
 const upsertCheckIn = async (dto, user) => {
   const options = { new: true };
-  const date = new Date(moment(dto.checkIn.date).startOf('day').format('YYYY-MM-DD'));
+  const date = new Date(moment.utc(dto.checkIn.date).startOf('day').format('YYYY-MM-DD'));
 
   let data = await SleepTrialTracker.findOneAndUpdate(
     {
@@ -69,7 +69,26 @@ const upsertCheckIn = async (dto, user) => {
       options,
     );
   }
+
+  if (!data) {
+    throw new ErrorHandler(400, 'Could not find Sleep Trial Tracker for this user.');
+  }
+
   await data.populate('sleepTrial').execPopulate();
+
+  const completedCount = data.checkIns
+    .reduce((acc, checkIn) => acc + checkIn.completed, 0);
+
+  if (completedCount >= data.trialLength && !data.completed) {
+    data.completed = true;
+    data.endDate = date;
+    await data.save();
+  } else if (completedCount < data.trialLength && data.completed) {
+    data.completed = false;
+    data.endDate = undefined;
+    await data.save();
+  }
+
   return data;
 };
 
