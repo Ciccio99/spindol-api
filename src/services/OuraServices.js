@@ -1,7 +1,6 @@
 import moment from 'moment-timezone';
 import axios from 'axios';
 import OauthServices from './OauthServices';
-import SleepSummary from '../models/SleepSummary';
 import SleepSummaryServices from '../services/SleepSummaryServices';
 import Logger from '../loaders/logger';
 
@@ -106,6 +105,7 @@ const syncSleepSummary = async (user, date = undefined) => {
       lightSleepDuration: summary.light,
       deepSleepDuration: summary.deep,
       remSleepDuration: summary.rem,
+      efficiency: summary.efficiency,
       source: DEVICE_NAME,
       owner: user._id,
     }));

@@ -35,6 +35,9 @@ const sleepSummarySchema = mongoose.Schema({
   awakeDuration: {
     type: Number,
   },
+  efficiency: {
+    type: Number,
+  },
   timeToWakeUp: {
     type: Number,
   },

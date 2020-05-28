@@ -81,7 +81,7 @@ const upsertCheckIn = async (dto, user) => {
 
   if (completedCount >= data.trialLength && !data.completed) {
     data.completed = true;
-    data.endDate = date;
+    data.endDate = moment.utc().startOf('day');
     await data.save();
   } else if (completedCount < data.trialLength && data.completed) {
     data.completed = false;
