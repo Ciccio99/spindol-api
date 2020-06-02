@@ -6,6 +6,8 @@ import { ErrorHandler } from '../utils/error';
 const createSleepTrialTracker = async (dto, user) => {
   const existingTracker = await SleepTrialTracker.findOne({
     sleepTrial: dto.sleepTrial,
+    completed: false,
+    active: true,
     owner: user._id,
   });
 

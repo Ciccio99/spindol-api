@@ -22,11 +22,20 @@ const validationSchemas = {
   registerUserSchema: {
     body: Joi.object({
       email: Joi.string().email().trim().required()
-        .messages({ 'string.email': 'Invalid email' }),
+        .messages({ 'string.email': 'Invalid email.' }),
+      name: Joi.string().trim().required()
+        .messages({ 'any.only': 'Must include your fullname.' }),
       password: Joi.string().min(7).trim().invalid('password')
         .required(),
-      passwordConfirm: Joi.any().valid(Joi.ref('password')).required()
-        .messages({ 'any.only': 'Passwords must match' }),
+      confirmPassword: Joi.any().valid(Joi.ref('password')).required()
+        .messages({ 'any.only': 'Passwords must match.' }),
+      token: Joi.string().trim(),
+    }),
+  },
+  adminInviteUser: {
+    body: Joi.object({
+      email: Joi.string().email().trim().required()
+        .messages({ 'string.email': 'Invalid email.' }),
     }),
   },
   createSleepTrialSchema: {

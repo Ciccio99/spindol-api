@@ -3,7 +3,7 @@ import { ErrorHandler } from '../../utils/error';
 
 const jwt = require('jsonwebtoken');
 
-const auth = async (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -13,6 +13,10 @@ const auth = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     if (!token) {
+      throw new ErrorHandler(401, 'Please Authenticate');
+    }
+
+    if (token === 'undefined') {
       throw new ErrorHandler(401, 'Please Authenticate');
     }
 
@@ -29,6 +33,24 @@ const auth = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+};
+
+const auth = (roles = []) => {
+  let authRoles = roles;
+  if (typeof roles === 'string') {
+    authRoles = [roles];
+  }
+
+  return [
+    authenticateToken,
+    (req, res, next) => {
+      if (authRoles.length && !authRoles.includes(req.user.role)) {
+        throw new ErrorHandler(401, 'Unauthorized');
+      }
+
+      next();
+    },
+  ];
 };
 
 export default auth;

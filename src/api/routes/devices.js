@@ -22,7 +22,7 @@ const route = Router();
 export default (app) => {
   app.use('/devices', route);
 
-  route.get('/redirectUri/:device', middlewares.auth, validate(validationSchemas.paramsDevices), (req, res, next) => {
+  route.get('/redirectUri/:device', middlewares.auth(), validate(validationSchemas.paramsDevices), (req, res, next) => {
     const { device } = req.params;
     if (!device || !config.devices.includes(device, 0)) {
       return next(new ErrorHandler(400, `Must include a valid device to authorize: ${config.devices}`));
@@ -42,7 +42,7 @@ export default (app) => {
    * ~~~~~~~~~~~~~~~~~~~~~
    */
 
-  route.get('/sync/oura', middlewares.auth, async (req, res, next) => {
+  route.get('/sync/oura', middlewares.auth(), async (req, res, next) => {
     try {
       await OuraServices.syncSleepSummary(req.user);
       return res.status(204).send();
@@ -58,11 +58,11 @@ export default (app) => {
    */
 
   // TODO: confirm that this may not beed needed Anymore
-  route.get('/auth/oura', middlewares.auth, (req, res, next) => {
+  route.get('/auth/oura', middlewares.auth(), (req, res, next) => {
     res.redirect(devices.oura.authorizationUri);
   });
 
-  route.get('/auth/oura/revoke', middlewares.auth, async (req, res, next) => {
+  route.get('/auth/oura/revoke', middlewares.auth(), async (req, res, next) => {
     try {
       // TODO: Investigate why Authroisation is not allowed for revoking all. Is Oura not Oauth2.0
       // THere is an issue on github talking about: https://github.com/lelylan/simple-oauth2/issues/106

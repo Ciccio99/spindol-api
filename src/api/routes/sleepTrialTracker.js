@@ -15,7 +15,7 @@ const route = Router();
 export default (app) => {
   app.use('/sleepTrialTracker', route);
 
-  route.get('', middlewares.auth, validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
+  route.get('', middlewares.auth(), validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await SleepTrialTrackerServices.querySleepTrialTracker(query, req.user);
@@ -25,7 +25,7 @@ export default (app) => {
     }
   });
 
-  route.get('/:id', middlewares.auth, validate(validationSchemas.paramsId), async (req, res, next) => {
+  route.get('/:id', middlewares.auth(), validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       const { id } = req.params;
       const data = await SleepTrialTrackerServices.getSleepTrialTracker(id, req.user);
@@ -35,7 +35,7 @@ export default (app) => {
     }
   });
 
-  route.post('/create', middlewares.auth, validate(validationSchemas.createSleepTrialTracker), async (req, res, next) => {
+  route.post('/create', middlewares.auth(), validate(validationSchemas.createSleepTrialTracker), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.createSleepTrialTracker(req.body, req.user);
       return res.json(data);
@@ -44,7 +44,7 @@ export default (app) => {
     }
   });
 
-  route.post('/add/checkIn', middlewares.auth, validate(validationSchemas.checkIn), async (req, res, next) => {
+  route.post('/add/checkIn', middlewares.auth(), validate(validationSchemas.checkIn), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.upsertCheckIn(req.body, req.user);
       return res.json(data);
@@ -53,7 +53,7 @@ export default (app) => {
     }
   });
 
-  route.post('/update', middlewares.auth, validate(validationSchemas.updateSleepTrialTracker), async (req, res, next) => {
+  route.post('/update', middlewares.auth(), validate(validationSchemas.updateSleepTrialTracker), async (req, res, next) => {
     try {
       const data = await SleepTrialTrackerServices.updateSleepTrialTracker(req.body, req.user);
       return res.json(data);

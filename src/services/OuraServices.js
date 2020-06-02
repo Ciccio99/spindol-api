@@ -3,6 +3,8 @@ import axios from 'axios';
 import OauthServices from './OauthServices';
 import SleepSummaryServices from '../services/SleepSummaryServices';
 import Logger from '../loaders/logger';
+import { ErrorHandler } from '../utils/error';
+
 
 const DEVICE_NAME = 'oura';
 
@@ -52,7 +54,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     throw new Error('User object is required');
   }
   if (!user.accounts[DEVICE_NAME].connected) {
-    throw new Error(`No accounts/device registered for ${DEVICE_NAME}`);
+    throw new ErrorHandler(400, `No accounts/device registered for ${DEVICE_NAME}`);
   }
   const limit = 1;
   const sort = { date: 'desc' };

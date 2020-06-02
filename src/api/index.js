@@ -5,6 +5,7 @@ import sleepTrialTracker from './routes/sleepTrialTracker';
 import dailyDiary from './routes/dailyDiary';
 import devices from './routes/devices';
 import sleepSummary from './routes/sleepSummary';
+import admin from './routes/admin';
 
 export default () => {
   const app = Router();
@@ -14,6 +15,7 @@ export default () => {
   dailyDiary(app);
   sleepSummary(app);
   devices(app);
+  admin(app);
 
   return app;
 };

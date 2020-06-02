@@ -27,4 +27,12 @@ export default {
     },
   },
   devices: ['oura', 'withings', 'fitbit'],
+
+  sendGrid: {
+    apiKey: process.env.SENDGRID_API_KEY,
+    from: 'alberto@sleepwell.ai',
+    templates: {
+      inviteUser: 'd-ca101e944c2a4ce98ad2e0af2de37abf',
+    },
+  },
 };
