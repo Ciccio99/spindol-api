@@ -41,7 +41,7 @@ const validationSchemas = {
   createSleepTrialSchema: {
     body: Joi.object({
       name: Joi.string().trim().required(),
-      trialLength: Joi.number().integer().required(),
+      trialLength: Joi.number().integer(),
       type: Joi.string().valid('Behavior', 'Hardware', 'Supplement', 'Environment').trim().required(),
       directions: Joi.string(),
       shortDescription: Joi.string(),

@@ -22,7 +22,7 @@ const sleepTrialSchema = new mongoose.Schema({
   },
   trialLength: {
     type: Number,
-    required: true,
+    default: 14,
     validate: {
       validator: Number.isInteger,
       message: '{VALUE} is not an integer value',
@@ -38,11 +38,9 @@ const sleepTrialSchema = new mongoose.Schema({
     type: String,
   },
   areasOfEffect: [{
-    areaOfEffect: {
-      type: String,
-      trim: true,
-      lowercase: true,
-    },
+    type: String,
+    trim: true,
+    lowercase: true,
   }],
 }, {
   timestamps: true,

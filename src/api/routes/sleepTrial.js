@@ -46,6 +46,16 @@ export default (app) => {
     }
   });
 
+  route.post('/create-many', middlewares.auth(roles.admin), async (req, res, next) => {
+    try {
+      const sleepTrialsArr = req.body;
+      const data = await SleepTrialServices.createMany(sleepTrialsArr);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
   route.delete('/:id', middlewares.auth(roles.admin), validate(validationSchemas.paramsId), async (req, res, next) => {
     try {
       await SleepTrialServices.deleteSleepTrial(req.params.DTO.id);
