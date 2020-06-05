@@ -28,6 +28,10 @@ const userRegister = async (userDTO) => {
     email, name, password, confirmPassword, token: registerToken,
   } = userDTO;
 
+  if (config.register.mode === 'invite-only' && !registerToken) {
+    throw new ErrorHandler(400, 'Invalid registration token. User registration limited to invite only.');
+  }
+
   if (registerToken) {
     let decoded;
     try {

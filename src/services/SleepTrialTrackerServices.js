@@ -94,10 +94,18 @@ const upsertCheckIn = async (dto, user) => {
   return data;
 };
 
+const removeById = async (id) => {
+  const deletedSTT = await SleepTrialTracker.findByIdAndRemove(id);
+  if (!deletedSTT) {
+    throw new ErrorHandler(404, 'No Sleep Trial Tracker found.');
+  }
+};
+
 export default {
   createSleepTrialTracker,
   getSleepTrialTracker,
   querySleepTrialTracker,
   updateSleepTrialTracker,
   upsertCheckIn,
+  removeById,
 };

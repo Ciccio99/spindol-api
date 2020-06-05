@@ -1,12 +1,13 @@
+import moment from 'moment-timezone';
 import DailyDiary from '../models/DailyDiary';
 import SleepTrialTracker from '../models/SleepTrialTracker';
-import moment from 'moment-timezone';
 
 const create = async (dto, user) => {
   let ssts = await SleepTrialTracker.find({
     active: true,
     owner: user._id,
     startDate: { $lte: dto.date },
+    endDate: { $not: { $lt: dto.date } },
   }).select('_id').exec();
   ssts = ssts.map((sst) => sst._id);
   const dailyDiary = new DailyDiary({
@@ -81,14 +82,6 @@ const query = async (queryObj, user) => {
     .exec();
 
   return dailyDiaries;
-  // await user.populate({
-  //   path: 'dailyDiaries',
-  //   populate: { path: 'sleepTrialTrackers' },
-  //   match,
-  //   options: { sort, skip, limit },
-  // }).execPopulate();
-
-  // return user.dailyDiaries;
 };
 
 const update = async (dto, user) => {

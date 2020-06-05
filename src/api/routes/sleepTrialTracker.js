@@ -61,4 +61,14 @@ export default (app) => {
       return next(error);
     }
   });
+
+  route.delete('/:id', middlewares.auth(), validate(validationSchemas.paramsId), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await SleepTrialTrackerServices.removeById(id);
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  });
 };

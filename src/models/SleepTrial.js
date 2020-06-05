@@ -22,7 +22,7 @@ const sleepTrialSchema = new mongoose.Schema({
   },
   trialLength: {
     type: Number,
-    default: 14,
+    default: 7,
     validate: {
       validator: Number.isInteger,
       message: '{VALUE} is not an integer value',
