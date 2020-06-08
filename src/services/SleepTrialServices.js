@@ -2,7 +2,7 @@ import SleepTrial from '../models/SleepTrial';
 
 const getSleepTrial = async (id) => {
   const sleepTrial = await SleepTrial.findById(id);
-  return sleepTrial;
+  return sleepTrial; 
 };
 
 const querySleepTrial = async (query) => {
@@ -20,6 +20,11 @@ const createSleepTrial = async (sleepTrialDTO) => {
   return sleepTrial;
 };
 
+const createMany = async (sleepTrials) => {
+  const results = await SleepTrial.insertMany(sleepTrials);
+  return results;
+};
+
 const deleteSleepTrial = async (id) => {
   await SleepTrial.findByIdAndDelete(id);
 };
@@ -28,5 +33,6 @@ export default {
   getSleepTrial,
   querySleepTrial,
   createSleepTrial,
+  createMany,
   deleteSleepTrial,
 };

@@ -1,27 +1,40 @@
 import SleepSummary from '../models/SleepSummary';
+import DailyDiaryServices from './DailyDiaryServices';
 
 export default {
-  async getById(id) {
-    const sleepSummary = await SleepSummary.findById(id);
+  async getById(id, user) {
+    const sleepSummary = await SleepSummary.findOne({ _id: id, owner: user._id });
     return sleepSummary;
   },
-  async query(query) {
+  async query(query, user) {
     const {
       match, sort, limit, skip,
     } = query;
-    const sleepSummaries = await SleepSummary.find(match)
-      .sort(sort)
-      .limit(limit)
-      .skip(skip);
-    return sleepSummaries;
+    await user.populate({
+      path: 'sleepSummaries',
+      match,
+      options: { sort, skip, limit },
+    }).execPopulate();
+    return user.sleepSummaries;
   },
-  async create(dto) {
-    const sleepSummary = new SleepSummary({ ...dto });
+  async create(dto, user) {
+    const sleepSummary = new SleepSummary({ ...dto, owner: user._id });
     await sleepSummary.save();
+    await DailyDiaryServices.upsertSleepSummary(sleepSummary, user);
     return sleepSummary;
   },
-  async update(dto) {
-    const sleepSummary = await SleepSummary.findByIdAndUpdate(dto._id, { ...dto }, { new: true });
+  async createMany(sleepSummaryArr, user) {
+    const sleepSummaries = sleepSummaryArr.map(async (ss) => {
+      const sleepSummary = await this.create(ss, user);
+      return sleepSummary;
+    });
+    return sleepSummaries;
+  },
+  async update(dto, user) {
+    const sleepSummary = await SleepSummary.findByIdAndUpdate(
+      { _id: dto._id, owner: user._id },
+      { ...dto }, { new: true },
+    );
     return sleepSummary;
   },
 };

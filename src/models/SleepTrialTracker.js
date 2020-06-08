@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import moment from 'moment-timezone';
 
 const sleepTrialTrackerSchema = new mongoose.Schema({
   sleepTrial: {
@@ -12,13 +13,14 @@ const sleepTrialTrackerSchema = new mongoose.Schema({
   },
   startDate: {
     type: Date,
-    default: Date.now,
+    default: moment.utc().startOf('day').toISOString(),
   },
   endDate: {
     type: Date,
   },
   completed: {
     type: Boolean,
+    default: false,
   },
   active: {
     type: Boolean,
@@ -40,6 +42,7 @@ const sleepTrialTrackerSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
 
 const SleapTrialTracker = mongoose.model('SleepTrialTracker', sleepTrialTrackerSchema);
 

@@ -7,6 +7,9 @@ const sleepSummarySchema = mongoose.Schema({
   },
   timezone: {
     type: String,
+  },
+  timezoneOffset: {
+    type: Number,
     required: true,
   },
   startDateTime: {
@@ -30,6 +33,9 @@ const sleepSummarySchema = mongoose.Schema({
     type: Number,
   },
   awakeDuration: {
+    type: Number,
+  },
+  efficiency: {
     type: Number,
   },
   timeToWakeUp: {

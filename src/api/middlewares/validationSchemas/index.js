@@ -22,16 +22,26 @@ const validationSchemas = {
   registerUserSchema: {
     body: Joi.object({
       email: Joi.string().email().trim().required()
-        .messages({ 'string.email': 'Invalid email' }),
-      password: Joi.string().min(7).trim().required(),
-      passwordConfirm: Joi.any().valid(Joi.ref('password')).required()
-        .messages({ 'any.only': 'Passwords must match' }),
+        .messages({ 'string.email': 'Invalid email.' }),
+      name: Joi.string().trim().required()
+        .messages({ 'any.only': 'Must include your fullname.' }),
+      password: Joi.string().min(7).trim().invalid('password')
+        .required(),
+      confirmPassword: Joi.any().valid(Joi.ref('password')).required()
+        .messages({ 'any.only': 'Passwords must match.' }),
+      token: Joi.string().trim(),
+    }),
+  },
+  adminInviteUser: {
+    body: Joi.object({
+      email: Joi.string().email().trim().required()
+        .messages({ 'string.email': 'Invalid email.' }),
     }),
   },
   createSleepTrialSchema: {
     body: Joi.object({
       name: Joi.string().trim().required(),
-      trialLength: Joi.number().integer().required(),
+      trialLength: Joi.number().integer(),
       type: Joi.string().valid('Behavior', 'Hardware', 'Supplement', 'Environment').trim().required(),
       directions: Joi.string(),
       shortDescription: Joi.string(),
@@ -55,7 +65,6 @@ const validationSchemas = {
           completed: Joi.boolean(),
         }),
       })),
-      owner: Joi.objectId().required(),
     }),
   },
   updateSleepTrialTracker: {
@@ -73,7 +82,6 @@ const validationSchemas = {
           completed: Joi.boolean(),
         }),
       })),
-      owner: Joi.objectId(),
     }),
   },
   checkIn: {
@@ -90,7 +98,6 @@ const validationSchemas = {
       date: Joi.date().iso().required(),
       mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
       tags: Joi.array().items(Joi.string()),
-      owner: Joi.objectId(),
     }),
   },
   updateDailyDiary: {
@@ -109,23 +116,36 @@ const validationSchemas = {
   sleepSummaryCreate: {
     body: Joi.object({
       date: Joi.date().iso().required(),
-      timezone: Joi.string().required(),
+      timezoneOffset: Joi.number().required(),
       startDateTime: Joi.date().iso().required(),
       endDateTime: Joi.date().iso().required(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual').required(),
-      owner: Joi.objectId().required(),
     }).unknown(true),
   },
   sleepSummaryUpdate: {
     body: Joi.object({
       _id: Joi.objectId().required(),
       date: Joi.date().iso(),
-      timezone: Joi.string(),
+      timezoneOffset: Joi.number(),
       startDateTime: Joi.date().iso(),
       endDateTime: Joi.date().iso(),
       source: Joi.string().trim().valid('oura', 'withings', 'fitbit', 'manual'),
-      owner: Joi.objectId(),
     }).unknown(true),
+  },
+  userUpdate: {
+    body: Joi.object({
+      email: Joi.string().email().trim(),
+      name: Joi.string().trim(),
+      password: Joi.string().min(7).trim(),
+      confirmPassword: Joi.when('password', {
+        is: Joi.exist(),
+        then: Joi.string().trim().required().valid(Joi.ref('password')),
+      }),
+      currentPassword: Joi.when('password', {
+        is: Joi.exist(),
+        then: Joi.string().trim().required(),
+      }),
+    }),
   },
 };
 

@@ -17,6 +17,11 @@ const handleError = (err, req, res) => {
     err.statusCode = 400;
     err.message = 'Duplicate found. Cannot have more than one.';
   }
+  if (err.name === 'TokenExpiredError') {
+    err.statusCode = 400;
+    err.message = 'Token expired. Please login for new token.';
+  }
+
   const { message } = err;
   const statusCode = err.statusCode || 500;
 

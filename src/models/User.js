@@ -124,6 +124,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     enum: ['user', 'admin'],
@@ -275,7 +279,13 @@ userSchema.methods.toJSON = function toJSON() {
 
 userSchema.methods.generateAuthToken = async function generateAuthToken() {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign({
+    _id: user._id.toString(),
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: '7d',
+  });
 
   user.tokens = user.tokens.concat({ token });
 
@@ -288,12 +298,7 @@ userSchema.methods.checkPassword = async function checkPassword(password) {
   const user = this;
 
   const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    throw new ErrorHandler(401, 'Incorrect password');
-  }
-
-  return true;
+  return isMatch;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {

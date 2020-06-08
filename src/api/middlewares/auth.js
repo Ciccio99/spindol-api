@@ -1,16 +1,25 @@
-import config from '../../config';
 import User from '../../models/User';
 import { ErrorHandler } from '../../utils/error';
 
 const jwt = require('jsonwebtoken');
 
-const auth = async (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   try {
-    // const token = req.header('Authorization').replace('Bearer ', '');
-    const token = req.cookies[config.authCookieName];
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      throw new ErrorHandler(401, 'Please Authenticate');
+    }
+
+    const token = authHeader.split(' ')[1];
+
     if (!token) {
       throw new ErrorHandler(401, 'Please Authenticate');
     }
+
+    if (token === 'undefined') {
+      throw new ErrorHandler(401, 'Please Authenticate');
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
     if (!user) {
@@ -26,33 +35,22 @@ const auth = async (req, res, next) => {
   }
 };
 
+const auth = (roles = []) => {
+  let authRoles = roles;
+  if (typeof roles === 'string') {
+    authRoles = [roles];
+  }
 
-// const auth = async (req, res, next) => {
-//   try {
-//     const authHeader = req.headers.authorization;
-//     if (!authHeader) {
-//       throw new ErrorHandler(401, 'Please Authenticate');
-//     }
+  return [
+    authenticateToken,
+    (req, res, next) => {
+      if (authRoles.length && !authRoles.includes(req.user.role)) {
+        throw new ErrorHandler(401, 'Unauthorized');
+      }
 
-//     const token = authHeader.split(' ')[1];
-
-//     if (!token) {
-//       throw new ErrorHandler(401, 'Please Authenticate');
-//     }
-
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
-//     if (!user) {
-//       throw new ErrorHandler(401, 'Please Authenticate');
-//     }
-
-//     req.token = token;
-//     req.user = user;
-
-//     return next();
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
+      next();
+    },
+  ];
+};
 
 export default auth;

@@ -22,7 +22,7 @@ const sleepTrialSchema = new mongoose.Schema({
   },
   trialLength: {
     type: Number,
-    required: true,
+    default: 7,
     validate: {
       validator: Number.isInteger,
       message: '{VALUE} is not an integer value',
@@ -38,21 +38,12 @@ const sleepTrialSchema = new mongoose.Schema({
     type: String,
   },
   areasOfEffect: [{
-    areaOfEffect: {
-      type: String,
-      trim: true,
-      lowercase: true,
-    },
+    type: String,
+    trim: true,
+    lowercase: true,
   }],
 }, {
   timestamps: true,
-});
-
-// Connect SleepTrial to any SleepTrialTrackers
-sleepTrialSchema.virtual('sleepTrial', {
-  ref: 'SleepTrial',
-  localField: '_id',
-  foreignField: 'sleepTrial',
 });
 
 const SleepTrial = mongoose.model('SleepTrial', sleepTrialSchema);

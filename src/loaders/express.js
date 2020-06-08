@@ -2,10 +2,12 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import sslRedirect from 'heroku-ssl-redirect';
+import compression from 'compression';
 import config from '../config';
 import routes from '../api';
 import Logger from './logger';
 import { ErrorHandler, handleError } from '../utils/error';
+
 
 const morgan = require('morgan');
 
@@ -14,6 +16,7 @@ export default ({ app }) => {
   app.use(morgan('combined', { stream: Logger.stream }));
   // Load in other middleware
   app.use(sslRedirect());
+  app.use(compression());
   app.use(cors({
     credentials: true,
     origin: config.frontEndUri,
