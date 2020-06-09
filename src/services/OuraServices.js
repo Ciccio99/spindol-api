@@ -38,7 +38,6 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   } else {
     searchDate = moment.utc().subtract(1, 'months').format('YYYY-MM-DD');
   }
-  console.log(searchDate);
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
     params: {
       start: searchDate,
@@ -72,8 +71,6 @@ const syncSleepSummary = async (user, date = undefined) => {
         startDate = moment.utc(user.sleepSummaries[0].date).format('YYYY-MM-DD');
       }
     }
-
-    console.log('THE DATE FOR SLEEP SYNCING ', startDate);
 
     const sleepSummaries = await getSleepSummaryHistory(user, startDate);
 
