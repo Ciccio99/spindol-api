@@ -72,6 +72,8 @@ const syncSleepSummary = async (user, date = undefined) => {
       }
     }
 
+    console.log('THE DATE FOR SLEEP SYNCING ', startDate);
+
     const sleepSummaries = await getSleepSummaryHistory(user, startDate);
 
     if (sleepSummaries.length === 0) {
