@@ -68,7 +68,7 @@ const syncSleepSummary = async (user, date = undefined) => {
         options: { limit, sort },
       }).execPopulate();
       if (user.sleepSummaries.length > 0) {
-        startDate = moment(user.sleepSummaries[0].date).add(1, 'day').format('YYYY-MM-DD');
+        startDate = moment.utc(user.sleepSummaries[0].date).add(1, 'day').format('YYYY-MM-DD');
       }
     }
 
