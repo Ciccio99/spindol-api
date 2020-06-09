@@ -34,9 +34,9 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
 
   let searchDate;
   if (date) {
-    searchDate = moment(date).format('YYYY-MM-DD');
+    searchDate = moment.utc(date).format('YYYY-MM-DD');
   } else {
-    searchDate = moment().subtract(1, 'months').format('YYYY-MM-DD');
+    searchDate = moment.utc().subtract(1, 'months').format('YYYY-MM-DD');
   }
 
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
