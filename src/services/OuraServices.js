@@ -38,7 +38,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   } else {
     searchDate = moment.utc().subtract(1, 'months').format('YYYY-MM-DD');
   }
-
+  console.log(searchDate);
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
     params: {
       start: searchDate,
@@ -68,7 +68,8 @@ const syncSleepSummary = async (user, date = undefined) => {
         options: { limit, sort },
       }).execPopulate();
       if (user.sleepSummaries.length > 0) {
-        startDate = moment.utc(user.sleepSummaries[0].date).add(1, 'day').format('YYYY-MM-DD');
+        // startDate = moment.utc(user.sleepSummaries[0].date).add(1, 'day').format('YYYY-MM-DD');
+        startDate = moment.utc(user.sleepSummaries[0].date).format('YYYY-MM-DD');
       }
     }
 
@@ -114,7 +115,6 @@ const syncSleepSummary = async (user, date = undefined) => {
       owner: user._id,
     }));
 
-    // const results = await SleepSummary.insertMany(formattedDocuments);
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Oura for ${user.email}`);
   } catch (error) {
