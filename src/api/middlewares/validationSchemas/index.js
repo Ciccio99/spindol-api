@@ -38,6 +38,12 @@ const validationSchemas = {
         .messages({ 'string.email': 'Invalid email.' }),
     }),
   },
+  adminInviteManyUsers: {
+    body: Joi.object({
+      emails: Joi.array().items(Joi.string().email().lowercase().trim()
+        .messages({ 'string.email': 'Invalid email.' })).required(),
+    }),
+  },
   createSleepTrialSchema: {
     body: Joi.object({
       name: Joi.string().trim().required(),

@@ -4,6 +4,7 @@ import EmailServices from '../../services/EmailServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
 import roles from '../../utils/roles';
+import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
 
@@ -16,6 +17,26 @@ export default (app) => {
     async (req, res, next) => {
       try {
         await EmailServices.sendRegisterEmail(req.body.email);
+        return res.status(204).send();
+      } catch (error) {
+        return next(error);
+      }
+    });
+
+  route.post('/invite-many',
+    middlewares.auth(roles.admin),
+    validate(validationSchemas.adminInviteManyUsers),
+    async (req, res, next) => {
+      try {
+        const { emails } = req.body;
+        if (emails.length === 0) {
+          throw new ErrorHandler(400, 'Must have at least one email in emails array.');
+        }
+
+        const emailPromises = emails.map(async (email) => EmailServices.sendRegisterEmail(email));
+
+        await Promise.all(emailPromises);
+
         return res.status(204).send();
       } catch (error) {
         return next(error);
