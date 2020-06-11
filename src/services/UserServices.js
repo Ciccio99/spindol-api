@@ -39,7 +39,7 @@ const userRegister = async (userDTO) => {
     } catch (error) {
       throw new ErrorHandler(400, 'Invalid registration token.');
     }
-    if (userDTO.email !== decoded.email) {
+    if (userDTO.email.toLowerCase() !== decoded.email.toLowerCase()) {
       throw new ErrorHandler(400, 'Invalid registration token.'
         + ' Please acquire a valid registration token.'
         + ' If you believe this is a mistake, please email contact@sleepwell.ai for help.');
