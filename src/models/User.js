@@ -287,6 +287,7 @@ userSchema.methods.generateAuthToken = async function generateAuthToken() {
     expiresIn: '7d',
   });
 
+  user.lastLogin = new Date();
   user.tokens = user.tokens.concat({ token });
 
   await user.save();
@@ -314,7 +315,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
     throw new ErrorHandler(401, 'Unable to authenticate');
   }
 
-  user.lastLogin = new Date();
   await user.save();
 
   return user;
