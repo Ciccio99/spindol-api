@@ -1,6 +1,7 @@
 import User from '../models/User';
 import { ErrorHandler } from '../utils/error';
 import config from '../config';
+import EmailServices from './EmailServices';
 
 const jwt = require('jsonwebtoken');
 
@@ -64,6 +65,9 @@ const userRegister = async (userDTO) => {
   const user = new User({ email, name, password });
   await user.save();
   const token = await user.generateAuthToken();
+  EmailServices.sendWelcomeEmail(user.email, user.name);
+  EmailServices.registerMarketingRecipient(user.email, user.name);
+
   return { user, token };
 };
 

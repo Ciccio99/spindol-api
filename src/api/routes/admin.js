@@ -42,4 +42,17 @@ export default (app) => {
         return next(error);
       }
     });
+
+  route.post('/registerMarketingEmail', middlewares.auth(roles.admin), async (req, res, next) => {
+    try {
+      const { email, name } = req.body;
+      if (!email) {
+        throw new ErrorHandler(400, 'Must provide email');
+      }
+      await EmailServices.registerMarketingRecipient(email, name);
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  });
 };

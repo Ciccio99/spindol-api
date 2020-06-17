@@ -32,9 +32,13 @@ export default {
   },
   sendGrid: {
     apiKey: process.env.SENDGRID_API_KEY,
-    from: 'alberto@sleepwell.ai',
+    from: 'support@sleepwell.ai',
     templates: {
       inviteUser: 'd-ca101e944c2a4ce98ad2e0af2de37abf',
+      welcomeUser: 'd-f167858aacee4e36b91c7c086428d4a3',
+    },
+    lists: {
+      betaRegistration: 'a1834fbb-a213-4a59-8f23-701243771a2c',
     },
   },
 };
