@@ -17,6 +17,7 @@
     "nodemon": "2.0.2"
   },
   "dependencies": {
+    "@sendgrid/client": "7.2.0",
     "@sendgrid/mail": "7.1.1",
     "app-root-path": "3.0.0",
     "axios": "0.19.2",
