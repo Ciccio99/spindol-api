@@ -64,7 +64,7 @@ export default (app) => {
 
   route.get('/auth/oura/revoke', middlewares.auth(), async (req, res, next) => {
     try {
-      await OauthServices.revokeDeviceToken('oura');
+      await OauthServices.revokeDeviceToken(req.user, 'oura');
       return res.status(204).send();
     } catch (error) {
       return next(error);
@@ -117,7 +117,7 @@ export default (app) => {
 
   route.get('/auth/withings/revoke', middlewares.auth(), async (req, res, next) => {
     try {
-      await OauthServices.revokeDeviceToken('withings');
+      await OauthServices.revokeDeviceToken(req.user, 'withings');
       return res.status(204).send();
     } catch (error) {
       return next(error);
