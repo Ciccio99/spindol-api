@@ -7,6 +7,7 @@ import { ErrorHandler } from '../../utils/error';
 import Logger from '../../loaders/logger';
 import UserServices from '../../services/UserServices';
 import OuraServices from '../../services/OuraServices';
+import OauthServices from '../../services/OauthServices';
 import WithingsServices from '../../services/WithingsServices';
 import middlewares from '../middlewares';
 
@@ -62,13 +63,7 @@ export default (app) => {
 
   route.get('/auth/oura/revoke', middlewares.auth(), async (req, res, next) => {
     try {
-      // TODO: Investigate why Authroisation is not allowed for revoking all. Is Oura not Oauth2.0
-      // THere is an issue on github talking about: https://github.com/lelylan/simple-oauth2/issues/106
-      // const token = devices.oura.oauth2.accessToken.create({ ...req.user.accounts.oura.token });
-      // await token.revokeAll();
-      req.user.accounts.oura.token = {};
-      req.user.accounts.oura.connected = false;
-      await req.user.save();
+      await OauthServices.revokeDeviceToken('oura');
       return res.status(204).send();
     } catch (error) {
       return next(error);
@@ -88,6 +83,9 @@ export default (app) => {
       const result = await devices.oura.oauth2.authorizationCode.getToken(options);
       const token = devices.oura.oauth2.accessToken.create(result);
 
+      if (user.accounts.withings.connected) {
+        await OauthServices.revokeDeviceToken(user, 'withings');
+      }
       await UserServices.setDeviceToken(user, 'oura', { ...token.token });
 
       // Sync Data asynchronously
@@ -118,13 +116,7 @@ export default (app) => {
 
   route.get('/auth/withings/revoke', middlewares.auth(), async (req, res, next) => {
     try {
-      // TODO: Investigate why Authroisation is not allowed for revoking all. Is Oura not Oauth2.0
-      // THere is an issue on github talking about: https://github.com/lelylan/simple-oauth2/issues/106
-      // const token = devices.oura.oauth2.accessToken.create({ ...req.user.accounts.oura.token });
-      // await token.revokeAll();
-      req.user.accounts.withings.token = {};
-      req.user.accounts.withings.connected = false;
-      await req.user.save();
+      await OauthServices.revokeDeviceToken('withings');
       return res.status(204).send();
     } catch (error) {
       return next(error);
@@ -144,6 +136,9 @@ export default (app) => {
       const result = await devices.withings.oauth2.authorizationCode.getToken(options);
       const token = devices.withings.oauth2.accessToken.create(result);
 
+      if (user.accounts.oura.connected) {
+        await OauthServices.revokeDeviceToken(user, 'oura');
+      }
       await UserServices.setDeviceToken(user, 'withings', { ...token.token });
 
       // Sync Data asynchronously
