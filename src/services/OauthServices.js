@@ -11,8 +11,8 @@ const refreshDeviceToken = async (user, device) => {
 
   const EXPIRATION_WINDOW_IN_SECONDS = 300;
 
-  const ouraOauth = oauth.oura();
-  let token = ouraOauth.oauth2.accessToken.create({ ...user.accounts[device].token });
+  const deviceOauth = oauth[device]();
+  let token = deviceOauth.oauth2.accessToken.create({ ...user.accounts[device].token });
 
   if (token.expired(EXPIRATION_WINDOW_IN_SECONDS)) {
     try {

@@ -5,7 +5,6 @@ import SleepSummaryServices from '../services/SleepSummaryServices';
 import Logger from '../loaders/logger';
 import { ErrorHandler } from '../utils/error';
 
-
 const DEVICE_NAME = 'oura';
 
 const getSleepSummary = async (user, date) => {
