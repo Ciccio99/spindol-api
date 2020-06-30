@@ -31,7 +31,8 @@ export default {
         tokenPath: '/oauth2/token',
       },
     });
+    const scope = 'user.sleepevents';
 
-    return { oauth2, redirectUri };
+    return { oauth2, redirectUri, scope };
   },
 };

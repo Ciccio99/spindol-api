@@ -34,6 +34,7 @@ export default (app) => {
     }
     const authorizationUri = devices[device].oauth2.authorizationCode.authorizeURL({
       redirect_uri: devices[device].redirectUri,
+      scope: devices[device].scope || undefined,
       state: jwt.sign({ _id: req.user._id.toString() }, process.env.JWT_SECRET),
     });
     return res.json(authorizationUri);
