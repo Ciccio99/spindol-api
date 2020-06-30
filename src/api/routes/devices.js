@@ -126,13 +126,13 @@ export default (app) => {
 
   route.get('/auth/withings/callback', async (req, res, next) => {
     const { code, state } = req.query;
-    const options = { code, redirect_uri: devices.oura.redirectUri };
+    const options = { code, redirect_uri: devices.withings.redirectUri };
 
     try {
       const decoded = jwt.verify(state, process.env.JWT_SECRET);
       const user = await UserServices.getUser(decoded._id);
       if (!user) {
-        throw new Error('No user ID provided in auth/oura/callback JWT state');
+        throw new Error('No user ID provided in auth/withings/callback JWT state');
       }
       const result = await devices.withings.oauth2.authorizationCode.getToken(options);
       const token = devices.withings.oauth2.accessToken.create(result);
@@ -143,7 +143,7 @@ export default (app) => {
       await UserServices.setDeviceToken(user, 'withings', { ...token.token });
 
       // Sync Data asynchronously
-      OuraServices.syncSleepSummary(user);
+      // OuraServices.syncSleepSummary(user);
 
       res.redirect(`${config.frontEndUri}/settings`);
     } catch (error) {
