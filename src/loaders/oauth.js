@@ -30,6 +30,10 @@ export default {
         tokenHost: 'https://account.withings.com',
         tokenPath: '/oauth2/token',
       },
+      options: {
+        bodyFormat: 'form',
+        authorizationMethod: 'body',
+      },
     });
     const scope = 'user.sleepevents';
 
