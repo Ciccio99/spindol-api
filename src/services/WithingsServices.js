@@ -62,7 +62,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
     params: {
       action,
       data_fields: dataFields,
-      lastUpdate: searchDate,
+      lastupdate: searchDate,
     },
   });
 
@@ -142,6 +142,10 @@ const syncSleepSummary = async (user, date = undefined) => {
       };
     });
 
+    if (formattedDocuments.length === 0) {
+      Logger.info(`Completed syncing 0 sleep summary documents from Withings for ${user.email}`);
+      return;
+    }
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Withings for ${user.email}`);
   } catch (error) {
