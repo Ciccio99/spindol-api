@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import axios from 'axios';
+import { get } from 'mongoose';
 import OauthServices from './OauthServices';
 import SleepSummaryServices from './SleepSummaryServices';
 import Logger from '../loaders/logger';
@@ -107,40 +108,58 @@ const syncSleepSummary = async (user, date = undefined) => {
       return;
     }
 
+    const getSleepDuration = (summary) => summary.data.lightsleepduration
+      + summary.data.deepsleepduration
+      + summary.data.remsleepduration;
 
-    const formattedDocuments = sleepSummaries.map((summary) => {
-      const totalSleep = summary.data.wakeupduration
+    const formattedDocuments = sleepSummaries
+      .reduce((accumulator, ss) => {
+        const match = accumulator.find((obj) => obj.date === ss.date);
+        if (match) {
+          const currDuration = getSleepDuration(match);
+          const newDuration = getSleepDuration(ss);
+          if (currDuration < newDuration) {
+            accumulator = accumulator.filter((accuSummary) => accuSummary.date !== ss.date);
+            accumulator.push(ss);
+          }
+        } else {
+          accumulator.push(ss);
+        }
+        return accumulator;
+      }, [])
+      .map((summary) => {
+        const totalSleep = summary.data.wakeupduration
         + summary.data.lightsleepduration
         + summary.data.deepsleepduration
         + summary.data.remsleepduration;
-      const efficiency = Math.round(
-        ((totalSleep - summary.data.wakeupduration) / totalSleep) * 100,
-      );
-      const timezoneOffset = moment.tz(moment.utc(), summary.timezone).utcOffset();
+        const efficiency = Math.round(
+          ((totalSleep - summary.data.wakeupduration) / totalSleep) * 100,
+        );
+        const timezoneOffset = moment.tz(moment.utc(), summary.timezone).utcOffset();
 
-      return {
-        date: moment.utc(summary.date).toISOString(),
-        timezoneOffset,
-        startDateTime: moment.utc(summary.startdate * 1000).toISOString(),
-        endDateTime: moment.utc(summary.enddate * 1000).toISOString(),
-        awakeDuration: summary.data.wakeupduration,
-        lightSleepDuration: summary.data.lightsleepduration,
-        deepSleepDuration: summary.data.deepsleepduration,
-        remSleepDuration: summary.data.remsleepduration,
-        efficiency,
-        wakeUpCount: summary.data.wakeupcount,
-        hrMin: summary.data.hr_min,
-        hrAverage: summary.data.hr_average,
-        hrMax: summary.data.hr_max,
-        rrMin: summary.data.rr_min,
-        rrMax: summary.data.rr_max,
-        breathingDisturbancesIntensity: summary.data.breathing_disturbances_intensity,
-        snoringDuration: summary.data.snoring,
-        snoringCount: summary.data.snoringepisodecount,
-        source: DEVICE_NAME,
-        owner: user._id,
-      };
-    });
+        return {
+          date: moment.utc(summary.date).toISOString(),
+          timezoneOffset,
+          startDateTime: moment.utc(summary.startdate * 1000).toISOString(),
+          endDateTime: moment.utc(summary.enddate * 1000).toISOString(),
+          awakeDuration: summary.data.wakeupduration,
+          lightSleepDuration: summary.data.lightsleepduration,
+          deepSleepDuration: summary.data.deepsleepduration,
+          remSleepDuration: summary.data.remsleepduration,
+          efficiency,
+          wakeUpCount: summary.data.wakeupcount,
+          hrMin: summary.data.hr_min,
+          hrAverage: summary.data.hr_average,
+          hrMax: summary.data.hr_max,
+          rrMin: summary.data.rr_min,
+          rrMax: summary.data.rr_max,
+          breathingDisturbancesIntensity: summary.data.breathing_disturbances_intensity,
+          snoringDuration: summary.data.snoring,
+          snoringCount: summary.data.snoringepisodecount,
+          source: DEVICE_NAME,
+          owner: user._id,
+        };
+      });
 
     if (formattedDocuments.length === 0) {
       Logger.info(`Completed syncing 0 sleep summary documents from Withings for ${user.email}`);
