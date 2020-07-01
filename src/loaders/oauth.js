@@ -35,7 +35,7 @@ export default {
         authorizationMethod: 'body',
       },
     });
-    const scope = 'user.sleepevents';
+    const scope = 'user.sleepevents,user.activity';
 
     return { oauth2, redirectUri, scope };
   },
