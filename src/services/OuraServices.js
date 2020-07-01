@@ -1,7 +1,7 @@
 import moment from 'moment-timezone';
 import axios from 'axios';
 import OauthServices from './OauthServices';
-import SleepSummaryServices from '../services/SleepSummaryServices';
+import SleepSummaryServices from './SleepSummaryServices';
 import Logger from '../loaders/logger';
 import { ErrorHandler } from '../utils/error';
 
@@ -77,23 +77,6 @@ const syncSleepSummary = async (user, date = undefined) => {
       Logger.info(`No data to sync from Oura for ${user.email}`);
       return;
     }
-
-    // const timezoneMap = {};
-
-    // const getTimezoneName = (offset) => {
-    //   const stringNum = offset.toString(10);
-    //   if (timezoneMap[stringNum]) return timezoneMap[stringNum];
-
-    //   const offsetName = moment.tz.names().find((timezoneName) => {
-    //     // eslint-disable-next-line no-underscore-dangle
-    //     if (offset === moment.tz(timezoneName)._offset) {
-    //       timezoneMap[offset.toString(10)] = timezoneName;
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    //   return offsetName;
-    // };
 
     let formattedDocuments = sleepSummaries.filter((summary) => summary.is_longest === 1);
 

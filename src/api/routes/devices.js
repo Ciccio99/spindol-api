@@ -47,14 +47,28 @@ export default (app) => {
    * ~~~~~~~~~~~~~~~~~~~~~
    */
 
-  route.get('/sync/oura', middlewares.auth(), async (req, res, next) => {
+  route.get('/sync/:device', middlewares.auth(), async (req, res, next) => {
     try {
-      await OuraServices.syncSleepSummary(req.user);
+      const { device } = req.params;
+      if (!device || !config.devices.includes(device)) {
+        throw new ErrorHandler(400, `Must provide valid device in params ${config.devices}`);
+      }
+      switch (device) {
+        case 'oura':
+          await OuraServices.syncSleepSummary(req.user);
+          break;
+        case 'withings':
+          await WithingsServices.syncSleepSummary(req.user);
+          break;
+        default:
+          throw new ErrorHandler(400, `Could not sync with the provided device: ${device}`);
+      }
       return res.status(204).send();
     } catch (error) {
       return next(error);
     }
   });
+
 
   /**
    * ~~~~~~~~~~~~~~~~~~~~~
