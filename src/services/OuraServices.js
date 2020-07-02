@@ -97,7 +97,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Oura for ${user.email}`);
   } catch (error) {
-    Logger.error(error);
+    Logger.error(`${error.message} - Stack Trace - ${error.stack}`);
   }
 };
 

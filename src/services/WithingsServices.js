@@ -52,8 +52,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
 
   let searchDate;
   if (date) {
-    console.log(date);
-    searchDate = moment.utc(date).valueOf / 1000;
+    searchDate = moment.utc(date).valueOf() / 1000;
   } else {
     searchDate = moment.utc().subtract(1, 'months').valueOf() / 1000;
   }
@@ -70,7 +69,6 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   });
 
   if (data.error) {
-    console.log(data);
     throw new Error(data.error);
   }
 
@@ -172,8 +170,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Withings for ${user.email}`);
   } catch (error) {
-    console.log(error);
-    Logger.error(error);
+    Logger.error(`${error.message} - Stack Trace - ${error.stack}`);
   }
 };
 
