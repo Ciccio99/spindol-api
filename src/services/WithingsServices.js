@@ -52,6 +52,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
 
   let searchDate;
   if (date) {
+    console.log(date);
     searchDate = moment.utc(date).valueOf() / 1000;
   } else {
     searchDate = moment.utc().subtract(1, 'months').valueOf() / 1000;
