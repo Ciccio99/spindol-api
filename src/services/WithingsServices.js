@@ -172,6 +172,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Withings for ${user.email}`);
   } catch (error) {
+    console.log(error);
     Logger.error(error);
   }
 };
