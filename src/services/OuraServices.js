@@ -89,6 +89,7 @@ const syncSleepSummary = async (user, date = undefined) => {
       deepSleepDuration: summary.deep,
       remSleepDuration: summary.rem,
       efficiency: summary.efficiency,
+      latency: summary.onset_latency,
       source: DEVICE_NAME,
       owner: user._id,
     }));

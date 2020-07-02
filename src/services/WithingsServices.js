@@ -30,6 +30,7 @@ const getSleepSummary = async (user, date) => {
   });
 
   if (data.error) {
+
     throw new Error(data.error);
   }
 
@@ -69,6 +70,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   });
 
   if (data.error) {
+    console.log(data);
     throw new Error(data.error);
   }
 
@@ -157,6 +159,7 @@ const syncSleepSummary = async (user, date = undefined) => {
           breathingDisturbancesIntensity: summary.data.breathing_disturbances_intensity,
           snoringDuration: summary.data.snoring,
           snoringCount: summary.data.snoringepisodecount,
+          latency: summary.data.durationtosleep,
           source: DEVICE_NAME,
           owner: user._id,
         };
