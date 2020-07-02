@@ -55,7 +55,7 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
     console.log(date);
     searchDate = moment.utc(date).valueOf() / 1000;
   } else {
-    searchDate = moment.utc().subtract(1, 'months').valueOf() / 1000;
+    searchDate = moment.utc().subtract(2, 'months').valueOf() / 1000;
   }
 
   const { data } = await axios.get('https://wbsapi.withings.net/v2/sleep', {
@@ -106,7 +106,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     const sleepSummaries = await getSleepSummaryHistory(user, startDate);
 
     if (sleepSummaries.length === 0) {
-      Logger.info(`No data to sync from Oura for ${user.email}`);
+      Logger.info(`No data to sync from Withings for ${user.email}`);
       return;
     }
 
