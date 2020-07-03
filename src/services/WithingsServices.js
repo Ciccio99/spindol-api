@@ -52,10 +52,9 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
 
   let searchDate;
   if (date) {
-    console.log(date);
-    searchDate = moment.utc(date).valueOf() / 1000;
+    searchDate = (moment.utc(date).valueOf() / 1000).toFixed(0);
   } else {
-    searchDate = moment.utc().subtract(2, 'months').valueOf() / 1000;
+    searchDate = (moment.utc().subtract(2, 'months').valueOf() / 1000).toFixed(0);
   }
 
   const { data } = await axios.get('https://wbsapi.withings.net/v2/sleep', {
