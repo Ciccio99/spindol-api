@@ -18,7 +18,11 @@ export default {
     return user.sleepSummaries;
   },
   async create(dto, user) {
-    const sleepSummary = new SleepSummary({ ...dto, owner: user._id });
+    let sleepSummary = await SleepSummary.findOne({ date: dto.date, owner: user._id });
+    if (sleepSummary) {
+      throw new Error(`SleepSummary date duplicate - ${dto.date} - User - ${user.email}`);
+    }
+    sleepSummary = new SleepSummary({ ...dto, owner: user._id });
     await sleepSummary.save();
     await DailyDiaryServices.upsertSleepSummary(sleepSummary, user);
     return sleepSummary;

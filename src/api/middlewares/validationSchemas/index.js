@@ -153,6 +153,11 @@ const validationSchemas = {
       }),
     }),
   },
+  getFatigueScore: {
+    query: Joi.object({
+      date: Joi.date().iso().required(),
+    }),
+  },
 };
 
 export default validationSchemas;

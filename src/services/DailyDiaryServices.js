@@ -3,6 +3,7 @@ import DailyDiary from '../models/DailyDiary';
 import SleepTrialTracker from '../models/SleepTrialTracker';
 
 const create = async (dto, user) => {
+  // Get Sleep Summary Trackers
   let ssts = await SleepTrialTracker.find({
     active: true,
     owner: user._id,
@@ -10,6 +11,7 @@ const create = async (dto, user) => {
     endDate: { $not: { $lt: dto.date } },
   }).select('_id').exec();
   ssts = ssts.map((sst) => sst._id);
+
   const dailyDiary = new DailyDiary({
     ...dto,
     sleepTrialTrackers: ssts,

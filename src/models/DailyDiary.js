@@ -14,6 +14,9 @@ const dailyDiarySchema = new mongoose.Schema({
     type: String,
     enum: ['awful', 'bad', 'meh', 'good', 'excellent'],
   },
+  fatigueScore: {
+    type: Number,
+  },
   tags: [String],
   sleepSummary: {
     type: mongoose.Schema.Types.ObjectId,

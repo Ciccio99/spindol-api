@@ -1,10 +1,9 @@
 import moment from 'moment-timezone';
 import axios from 'axios';
 import OauthServices from './OauthServices';
-import SleepSummaryServices from '../services/SleepSummaryServices';
+import SleepSummaryServices from './SleepSummaryServices';
 import Logger from '../loaders/logger';
 import { ErrorHandler } from '../utils/error';
-
 
 const DEVICE_NAME = 'oura';
 
@@ -16,10 +15,12 @@ const getSleepSummary = async (user, date) => {
 
   const searchDate = moment(date).format('YYYY-MM-DD');
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
+    headers: {
+      Authorization: `Bearer ${user.accounts.oura.token.access_token}`,
+    },
     params: {
       start: searchDate,
       end: searchDate,
-      access_token: user.accounts.oura.token.access_token,
     },
   });
 
@@ -36,12 +37,14 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
   if (date) {
     searchDate = moment.utc(date).format('YYYY-MM-DD');
   } else {
-    searchDate = moment.utc().subtract(1, 'months').format('YYYY-MM-DD');
+    searchDate = moment.utc().subtract(2, 'months').format('YYYY-MM-DD');
   }
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
+    headers: {
+      Authorization: `Bearer ${user.accounts.oura.token.access_token}`,
+    },
     params: {
       start: searchDate,
-      access_token: user.accounts.oura.token.access_token,
     },
   });
 
@@ -67,7 +70,6 @@ const syncSleepSummary = async (user, date = undefined) => {
         options: { limit, sort },
       }).execPopulate();
       if (user.sleepSummaries.length > 0) {
-        // startDate = moment.utc(user.sleepSummaries[0].date).add(1, 'day').format('YYYY-MM-DD');
         startDate = moment.utc(user.sleepSummaries[0].date).format('YYYY-MM-DD');
       }
     }
@@ -78,23 +80,6 @@ const syncSleepSummary = async (user, date = undefined) => {
       Logger.info(`No data to sync from Oura for ${user.email}`);
       return;
     }
-
-    // const timezoneMap = {};
-
-    // const getTimezoneName = (offset) => {
-    //   const stringNum = offset.toString(10);
-    //   if (timezoneMap[stringNum]) return timezoneMap[stringNum];
-
-    //   const offsetName = moment.tz.names().find((timezoneName) => {
-    //     // eslint-disable-next-line no-underscore-dangle
-    //     if (offset === moment.tz(timezoneName)._offset) {
-    //       timezoneMap[offset.toString(10)] = timezoneName;
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    //   return offsetName;
-    // };
 
     let formattedDocuments = sleepSummaries.filter((summary) => summary.is_longest === 1);
 
@@ -108,6 +93,7 @@ const syncSleepSummary = async (user, date = undefined) => {
       deepSleepDuration: summary.deep,
       remSleepDuration: summary.rem,
       efficiency: summary.efficiency,
+      latency: summary.onset_latency,
       source: DEVICE_NAME,
       owner: user._id,
     }));
@@ -115,7 +101,7 @@ const syncSleepSummary = async (user, date = undefined) => {
     const results = await SleepSummaryServices.createMany(formattedDocuments, user);
     Logger.info(`Completed syncing ${results.length} sleep summary documents from Oura for ${user.email}`);
   } catch (error) {
-    Logger.error(error);
+    Logger.error(`${error.message} - Stack Trace - ${error.stack}`);
   }
 };
 

@@ -3,6 +3,7 @@ import { validate } from 'express-validation';
 import validationSchemas from '../middlewares/validationSchemas';
 import SleepSummaryServices from '../../services/SleepSummaryServices';
 import middlewares from '../middlewares';
+import SleepSummaryUtils from '../../utils/sleepSummary';
 
 const route = Router();
 
@@ -23,6 +24,15 @@ export default (app) => {
       }
       const data = await SleepSummaryServices.query(query, req.user);
       return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.get('/fatigueScore', middlewares.auth(), validate(validationSchemas.getFatigueScore), async (req, res, next) => {
+    try {
+      const fatigueScore = await SleepSummaryUtils.getFatigueScore(req.query.date, req.user);
+      return res.json({ fatigueScore });
     } catch (error) {
       return next(error);
     }

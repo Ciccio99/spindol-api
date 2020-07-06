@@ -15,11 +15,30 @@ export default {
       },
     });
 
-    const authorizationUri = oauth2.authorizationCode.authorizeURL({
-      redirect_uri: redirectUri,
-      state: 'H4etKCeAVXhBdDm5',
-    });
+    const scope = 'email+personal+daily';
 
-    return { oauth2, authorizationUri, redirectUri };
+    return { oauth2, redirectUri, scope };
+  },
+  withings() {
+    const redirectUri = `${config.baseUrl}/api/devices/auth/withings/callback`;
+    const oauth2 = simpleOauth.create({
+      client: {
+        id: config.oauth2.withings.client_id,
+        secret: config.oauth2.withings.client_secret,
+      },
+      auth: {
+        authorizeHost: 'https://account.withings.com',
+        authorizePath: '/oauth2_user/authorize2',
+        tokenHost: 'https://account.withings.com',
+        tokenPath: '/oauth2/token',
+      },
+      options: {
+        bodyFormat: 'form',
+        authorizationMethod: 'body',
+      },
+    });
+    const scope = 'user.sleepevents,user.activity';
+
+    return { oauth2, redirectUri, scope };
   },
 };

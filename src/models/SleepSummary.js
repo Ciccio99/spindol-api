@@ -74,6 +74,9 @@ const sleepSummarySchema = mongoose.Schema({
   sleepScore: {
     type: Number,
   },
+  latency: {
+    type: Number,
+  },
   source: {
     type: String,
     enum: ['oura', 'withings', 'fitbit', 'manual'],

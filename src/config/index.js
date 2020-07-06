@@ -26,6 +26,10 @@ export default {
       client_id: process.env.OURA_CLIENT_ID,
       client_secret: process.env.OURA_CLIENT_SECRET,
     },
+    withings: {
+      client_id: process.env.WITHINGS_CLIENT_ID,
+      client_secret: process.env.WITHINGS_CLIENT_SECRET,
+    },
   },
   register: {
     mode: 'invite-only',
