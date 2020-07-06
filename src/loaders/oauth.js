@@ -15,7 +15,9 @@ export default {
       },
     });
 
-    return { oauth2, redirectUri };
+    const scope = 'email+personal+daily';
+
+    return { oauth2, redirectUri, scope };
   },
   withings() {
     const redirectUri = `${config.baseUrl}/api/devices/auth/withings/callback`;

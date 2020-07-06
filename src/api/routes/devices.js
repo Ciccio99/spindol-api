@@ -32,11 +32,18 @@ export default (app) => {
     if (!device || !config.devices.includes(device, 0)) {
       return next(new ErrorHandler(400, `Must include a valid device to authorize: ${config.devices}`));
     }
-    const authorizationUri = devices[device].oauth2.authorizationCode.authorizeURL({
+
+    const params = {
       redirect_uri: devices[device].redirectUri,
-      scope: devices[device].scope || undefined,
       state: jwt.sign({ _id: req.user._id.toString() }, process.env.JWT_SECRET),
-    });
+    };
+
+    let authorizationUri = devices[device].oauth2.authorizationCode.authorizeURL(params);
+
+    if (devices[device].scope) {
+      authorizationUri += `&scope=${devices[device].scope}`;
+    }
+
     return res.json(authorizationUri);
   });
 

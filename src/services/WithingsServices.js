@@ -1,6 +1,5 @@
 import moment from 'moment-timezone';
 import axios from 'axios';
-import { get } from 'mongoose';
 import OauthServices from './OauthServices';
 import SleepSummaryServices from './SleepSummaryServices';
 import Logger from '../loaders/logger';
@@ -30,7 +29,6 @@ const getSleepSummary = async (user, date) => {
   });
 
   if (data.error) {
-
     throw new Error(data.error);
   }
 
