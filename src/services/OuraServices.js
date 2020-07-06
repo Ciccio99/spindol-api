@@ -15,10 +15,12 @@ const getSleepSummary = async (user, date) => {
 
   const searchDate = moment(date).format('YYYY-MM-DD');
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
+    headers: {
+      Authorization: `Bearer ${user.accounts.oura.token.access_token}`,
+    },
     params: {
       start: searchDate,
       end: searchDate,
-      access_token: user.accounts.oura.token.access_token,
     },
   });
 
@@ -38,9 +40,11 @@ const getSleepSummaryHistory = async (user, date = undefined) => {
     searchDate = moment.utc().subtract(2, 'months').format('YYYY-MM-DD');
   }
   const { data } = await axios.get('https://api.ouraring.com/v1/sleep', {
+    headers: {
+      Authorization: `Bearer ${user.accounts.oura.token.access_token}`,
+    },
     params: {
       start: searchDate,
-      access_token: user.accounts.oura.token.access_token,
     },
   });
 
