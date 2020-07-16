@@ -20,7 +20,12 @@ export default (app) => {
         throw new ErrorHandler(400, 'When providing a date range, must provide Start date and End ate fo range');
       }
       if (query.rangeDateStart && query.rangeDateEnd) {
-        query.startDate = { $gte: query.rangeDateStart, $lte: query.rangeDateEnd };
+        query.$or = [
+          { startDate: { $gte: query.rangeDateStart, $lte: query.rangeDateEnd } },
+          { endDate: { $gte: query.rangeDateStart, $lte: query.rangeDateEnd } },
+          { active: true },
+        ];
+        // query.startDate = { $gte: query.rangeDateStart, $lte: query.rangeDateEnd };
         delete query.rangeDateStart;
         delete query.rangeDateEnd;
       }
