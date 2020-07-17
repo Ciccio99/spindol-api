@@ -24,6 +24,12 @@ export default (app) => {
           { startDate: { $gte: query.rangeDateStart, $lte: query.rangeDateEnd } },
           { endDate: { $gte: query.rangeDateStart, $lte: query.rangeDateEnd } },
           { active: true },
+          {
+            $and: [
+              { startDate: { $lte: query.rangeDateStart } },
+              { endDate: { $gte: query.rangeDateEnd } },
+            ],
+          },
         ];
         // query.startDate = { $gte: query.rangeDateStart, $lte: query.rangeDateEnd };
         delete query.rangeDateStart;
