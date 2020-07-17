@@ -263,6 +263,13 @@ userSchema.virtual('dailyDiaries', {
   foreignField: 'owner',
 });
 
+// Connect User to their Habits
+userSchema.virtual('habits', {
+  ref: 'Habit',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
 userSchema.methods.toJSON = function toJSON() {
   const user = this;
   const userObject = user.toObject();

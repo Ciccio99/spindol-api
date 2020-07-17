@@ -43,7 +43,6 @@ const sleepTrialTrackerSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-
 const SleapTrialTracker = mongoose.model('SleepTrialTracker', sleepTrialTrackerSchema);
 
 export default SleapTrialTracker;
