@@ -3,6 +3,7 @@ import { validate } from 'express-validation';
 import DailyDiaryServices from '../../services/DailyDiaryServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
+import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
 
@@ -70,6 +71,34 @@ export default (app) => {
     try {
       const data = await DailyDiaryServices.upsert(req.body, req.user);
       return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.post('/:id/tags', middlewares.auth(), validate(validationSchemas.dailyDiaryTags, { context: true }), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { tags } = req.body;
+      if (!tags || tags.length === 0) {
+        throw new ErrorHandler(400, 'Must provide tags.');
+      }
+      const currTags = await DailyDiaryServices.insertTags(tags, id);
+      return res.json({ tags: currTags });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.delete('/:id/tags', middlewares.auth(), validate(validationSchemas.dailyDiaryTags, { context: true }), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { tags } = req.body;
+      if (!tags || tags.length === 0) {
+        throw new ErrorHandler(400, 'Must provide tags.');
+      }
+      const currTags = await DailyDiaryServices.removeTags(tags, id);
+      return res.json({ tags: currTags });
     } catch (error) {
       return next(error);
     }

@@ -137,6 +137,30 @@ const setDeviceToken = async (user, device, token) => {
   await user.save();
 };
 
+const insertTags = async (tags, user) => {
+  let added = [];
+
+  if (user.settings.tags && user.settings.tags.length) {
+    added = user.settings.tags.addToSet(...tags);
+  } else {
+    added = [...new Set(tags)];
+    user.settings.tags = added;
+  }
+
+  await user.save();
+
+  return user.settings.tags;
+};
+
+const removeTags = async (tags, user) => {
+  user.settings.tags = user.settings.tags
+    .filter((tag) => !tags.includes(tag));
+
+  await user.save();
+
+  return user.settings.tags;
+};
+
 export default {
   userLogin,
   userLogout,
@@ -148,4 +172,6 @@ export default {
   setDeviceToken,
   getUser,
   getUserByEmail,
+  insertTags,
+  removeTags,
 };

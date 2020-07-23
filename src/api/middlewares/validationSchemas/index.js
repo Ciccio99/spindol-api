@@ -103,7 +103,7 @@ const validationSchemas = {
     body: Joi.object({
       date: Joi.date().iso().required(),
       mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
-      tags: Joi.array().items(Joi.string()),
+      tags: Joi.array().items(Joi.string().lowercase().trim()),
     }),
   },
   updateDailyDiary: {
@@ -111,7 +111,7 @@ const validationSchemas = {
       _id: Joi.objectId().required(),
       date: Joi.date().iso(),
       mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
-      tags: Joi.array().items(Joi.string()),
+      tags: Joi.array().items(Joi.string().lowercase().trim()),
     }),
   },
   paramsDevices: {
@@ -156,6 +156,20 @@ const validationSchemas = {
   getFatigueScore: {
     query: Joi.object({
       date: Joi.date().iso().required(),
+    }),
+  },
+  tags: {
+    body: Joi.object({
+      tags: Joi.array().items(Joi.string().trim().lowercase()).required(),
+    }),
+  },
+  dailyDiaryTags: {
+    params: Joi.object({
+      id: Joi.objectId().required(),
+    }),
+    body: Joi.object({
+      id: Joi.objectId().required(),
+      tags: Joi.array().items(Joi.string().trim().lowercase()).required(),
     }),
   },
 };

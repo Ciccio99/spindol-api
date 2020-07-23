@@ -144,6 +144,18 @@ const upsertSleepTrialTracker = async (sst, user) => {
   return dd;
 };
 
+const insertTags = async (tags, id) => {
+  const dd = await DailyDiary
+    .findByIdAndUpdate(id, { $addToSet: { tags: { $each: tags } } }, { new: true });
+  return dd.tags;
+};
+
+const removeTags = async (tags, id) => {
+  const dd = await DailyDiary
+    .findByIdAndUpdate(id, { $pull: { tags: { $in: tags } } }, { new: true });
+  return dd.tags;
+};
+
 export default {
   create,
   getById,
@@ -155,4 +167,6 @@ export default {
   upsert,
   upsertSleepSummary,
   upsertSleepTrialTracker,
+  insertTags,
+  removeTags,
 };

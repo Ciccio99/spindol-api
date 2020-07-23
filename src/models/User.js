@@ -238,6 +238,13 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
   },
+  settings: {
+    tags: [{
+      type: String,
+      trim: true,
+      lowercase: true,
+    }],
+  },
 }, {
   timestamps: true,
 });
