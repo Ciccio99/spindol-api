@@ -86,12 +86,10 @@ const query = async (queryObj, user) => {
   return dailyDiaries;
 };
 
-const update = async (dto, user) => {
-  const dailyDiary = await DailyDiary.findOneAndUpdate(
-    { _id: dto._id, owner: user._id },
-    { ...dto }, { new: true },
-  );
-  return dailyDiary;
+const update = async (dto, id) => {
+  const dd = await DailyDiary.findByIdAndUpdate(id, dto, { new: true });
+
+  return dd;
 };
 
 const upsert = async (dto, user) => {

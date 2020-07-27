@@ -20,7 +20,7 @@ export default (app) => {
     }
   });
 
-  route.get('/getByDate', middlewares.auth(), async (req, res, next) => {
+route.get('/getByDate', middlewares.auth(), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await DailyDiaryServices.getsertByDate(query.date, req.user);
@@ -58,9 +58,12 @@ export default (app) => {
     }
   });
 
-  route.post('/update', middlewares.auth(), validate(validationSchemas.updateDailyDiary), async (req, res, next) => {
+  route.patch('/:id', middlewares.auth(), validate(validationSchemas.patchDailyDiary, { context: true }), async (req, res, next) => {
     try {
-      const data = await DailyDiaryServices.update(req.body, req.user);
+      const { id } = req.params;
+      const dto = req.body;
+      dto.owner = req.user._id;
+      const data = await DailyDiaryServices.update(dto, id);
       return res.json(data);
     } catch (error) {
       return next(error);

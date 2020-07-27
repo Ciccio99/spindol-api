@@ -110,7 +110,18 @@ const validationSchemas = {
     body: Joi.object({
       _id: Joi.objectId().required(),
       date: Joi.date().iso(),
-      mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim().required(),
+      mood: Joi.string().valid('awful', 'bad', 'meh', 'good', 'excellent').trim(),
+      tags: Joi.array().items(Joi.string().lowercase().trim()),
+    }),
+  },
+  patchDailyDiary: {
+    params: Joi.object({
+      id: Joi.objectId().required(),
+    }),
+    body: Joi.object({
+      _id: Joi.objectId().required(),
+      date: Joi.date().iso(),
+      mood: Joi.string().lowercase().trim().valid('awful', 'bad', 'meh', 'good', 'excellent'),
       tags: Joi.array().items(Joi.string().lowercase().trim()),
     }),
   },

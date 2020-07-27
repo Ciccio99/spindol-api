@@ -138,6 +138,14 @@ const setDeviceToken = async (user, device, token) => {
 };
 
 const insertTags = async (tags, user) => {
+  user.settings.tags = [...new Set(tags)];
+  await user.save();
+
+  return user.settings.tags;
+};
+
+
+const upsertTags = async (tags, user) => {
   let added = [];
 
   if (user.settings.tags && user.settings.tags.length) {
@@ -173,5 +181,6 @@ export default {
   getUser,
   getUserByEmail,
   insertTags,
+  upsertTags,
   removeTags,
 };
