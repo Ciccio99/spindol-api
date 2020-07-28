@@ -95,7 +95,7 @@ export default (app) => {
   route.put('/me/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
     try {
       const { tags } = req.body;
-      if (!tags || tags.length === 0) {
+      if (!tags) {
         throw new ErrorHandler(400, 'Must provide tags.');
       }
       const currTags = await UserServices.insertTags(tags, req.user);
