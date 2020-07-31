@@ -14,8 +14,13 @@ const handleError = (err, req, res) => {
     err.statusCode = 400;
   }
   if (err.name === 'MongoError' && err.code === 11000) {
+    const dupValues = err.keyValue ? Object.keys(err.keyValue) : [];
+    if (dupValues) {
+      err.message = `Duplicate found - ${dupValues} must be unique.`;
+    } else {
+      err.message = 'Duplicate found - Value must be unique.';
+    }
     err.statusCode = 400;
-    err.message = 'Duplicate found. Cannot have more than one.';
   }
   if (err.name === 'TokenExpiredError') {
     err.statusCode = 400;

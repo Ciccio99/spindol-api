@@ -17,7 +17,11 @@ const dailyDiarySchema = new mongoose.Schema({
   fatigueScore: {
     type: Number,
   },
-  tags: [String],
+  tags: [{
+    type: String,
+    trim: true,
+    lowercase: true,
+  }],
   sleepSummary: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SleepSummary',

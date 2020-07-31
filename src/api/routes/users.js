@@ -70,10 +70,49 @@ export default (app) => {
 
   route.get('/me', middlewares.auth(), async (req, res) => res.json({ user: req.user }));
 
-  route.delete('/me', middlewares.auth(), async (req, res, next) => {
+  // route.delete('/me', middlewares.auth(), async (req, res, next) => {
+  //   try {
+  //     await UserServices.userDelete(req.user);
+  //     return res.status(204).send();
+  //   } catch (error) {
+  //     return next(error);
+  //   }
+  // });
+
+  route.post('/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
     try {
-      await UserServices.userDelete(req.user);
-      return res.status(204).send();
+      const { tags } = req.body;
+      if (!tags || tags.length === 0) {
+        throw new ErrorHandler(400, 'Must provide tags.');
+      }
+      const currTags = await UserServices.upsertTags(tags, req.user);
+      return res.json({ tags: currTags });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.put('/me/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
+    try {
+      const { tags } = req.body;
+      if (!tags) {
+        throw new ErrorHandler(400, 'Must provide tags.');
+      }
+      const currTags = await UserServices.insertTags(tags, req.user);
+      return res.json({ tags: currTags });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.delete('/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
+    try {
+      const { tags } = req.body;
+      if (!tags || tags.length === 0) {
+        throw new ErrorHandler(400, 'Must provide tags.');
+      }
+      const currTags = await UserServices.removeTags(tags, req.user);
+      return res.json({ tags: currTags });
     } catch (error) {
       return next(error);
     }

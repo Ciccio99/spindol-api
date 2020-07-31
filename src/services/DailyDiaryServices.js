@@ -86,12 +86,10 @@ const query = async (queryObj, user) => {
   return dailyDiaries;
 };
 
-const update = async (dto, user) => {
-  const dailyDiary = await DailyDiary.findOneAndUpdate(
-    { _id: dto._id, owner: user._id },
-    { ...dto }, { new: true },
-  );
-  return dailyDiary;
+const update = async (dto, id) => {
+  const dd = await DailyDiary.findByIdAndUpdate(id, dto, { new: true });
+
+  return dd;
 };
 
 const upsert = async (dto, user) => {
@@ -144,6 +142,18 @@ const upsertSleepTrialTracker = async (sst, user) => {
   return dd;
 };
 
+const insertTags = async (tags, id) => {
+  const dd = await DailyDiary
+    .findByIdAndUpdate(id, { $addToSet: { tags: { $each: tags } } }, { new: true });
+  return dd.tags;
+};
+
+const removeTags = async (tags, id) => {
+  const dd = await DailyDiary
+    .findByIdAndUpdate(id, { $pull: { tags: { $in: tags } } }, { new: true });
+  return dd.tags;
+};
+
 export default {
   create,
   getById,
@@ -155,4 +165,6 @@ export default {
   upsert,
   upsertSleepSummary,
   upsertSleepTrialTracker,
+  insertTags,
+  removeTags,
 };
