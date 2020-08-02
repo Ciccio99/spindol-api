@@ -6,11 +6,22 @@ import UserServices from '../../services/UserServices';
 import middlewares from '../middlewares';
 import validationSchemas from '../middlewares/validationSchemas';
 import { ErrorHandler } from '../../utils/error';
+import Roles from '../../utils/roles';
 
 const route = Router();
 
 export default (app) => {
   app.use('/users', route);
+
+  route.get('', middlewares.auth(Roles.admin), async (req, res, next) => {
+    try {
+      const { query } = req;
+      const data = await UserServices.get(query);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
 
   // SIGN IN
   route.post('/login', validators.userLogin, async (req, res, next) => {

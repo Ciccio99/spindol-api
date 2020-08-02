@@ -20,7 +20,7 @@ export default (app) => {
     }
   });
 
-route.get('/getByDate', middlewares.auth(), async (req, res, next) => {
+  route.get('/getByDate', middlewares.auth(), async (req, res, next) => {
     try {
       const query = JSON.parse(req.query.query);
       const data = await DailyDiaryServices.getsertByDate(query.date, req.user);

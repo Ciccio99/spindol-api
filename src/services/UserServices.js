@@ -1,9 +1,34 @@
+import mongoose from 'mongoose';
 import User from '../models/User';
 import { ErrorHandler } from '../utils/error';
 import config from '../config';
 import EmailServices from './EmailServices';
 
 const jwt = require('jsonwebtoken');
+
+const get = async (query) => {
+  let { skip, limit } = query;
+
+  skip = skip ? Number(skip) : 0;
+  limit = limit ? Number(limit) : 0;
+  delete query.skip;
+  delete query.limit;
+
+  if (query._id) {
+    try {
+      query._id = new mongoose.mongo.ObjectID(query._id);
+    } catch (error) {
+      throw new ErrorHandler(400, 'Provided ID invalid');
+    }
+  }
+
+  const data = await User
+    .find(query)
+    .skip(skip)
+    .limit(limit);
+
+  return data;
+};
 
 const userLogin = async (userDTO) => {
   const user = await User.findByCredentials(userDTO.email, userDTO.password);
@@ -170,6 +195,7 @@ const removeTags = async (tags, user) => {
 };
 
 export default {
+  get,
   userLogin,
   userLogout,
   userRemoveToken,
