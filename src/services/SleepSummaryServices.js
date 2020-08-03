@@ -35,7 +35,6 @@ const get = async (queryDto) => {
       throw new ErrorHandler(400, 'Provided ID invalid');
     }
   }
-
   const data = await SleepSummary
     .find(queryDto)
     .skip(skip)
@@ -57,7 +56,7 @@ const create = async (dto, user) => {
 
 const createMany = async (sleepSummaryArr, user) => {
   const sleepSummaries = sleepSummaryArr.map(async (ss) => {
-    const sleepSummary = await this.create(ss, user);
+    const sleepSummary = await create(ss, user);
     return sleepSummary;
   });
   return sleepSummaries;
