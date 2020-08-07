@@ -23,7 +23,7 @@ const handleError = (err, req, res) => {
     err.statusCode = 400;
   }
   if (err.name === 'TokenExpiredError') {
-    err.statusCode = 400;
+    err.statusCode = 401;
     err.message = 'Token expired. Please login for new token.';
   }
 
