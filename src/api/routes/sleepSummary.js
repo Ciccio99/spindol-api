@@ -4,6 +4,10 @@ import validationSchemas from '../middlewares/validationSchemas';
 import SleepSummaryServices from '../../services/SleepSummaryServices';
 import middlewares from '../middlewares';
 import SleepSummaryUtils from '../../utils/sleepSummary';
+import Roles from '../../utils/roles';
+import xor from '../../utils/xor';
+import SleepSummary from '../../models/SleepSummary';
+import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
 
@@ -23,6 +27,29 @@ export default (app) => {
         query = JSON.parse(req.query.query);
       }
       const data = await SleepSummaryServices.query(query, req.user);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  // TODO: This is a temporary route for testing, ideally this will be refactored
+  // into a better permissions architecture
+  route.get('/teams', middlewares.auth(Roles.admin), async (req, res, next) => {
+    try {
+      const { query } = req;
+      if (xor(query.rangeDateStart, query.rangeDateEnd)) {
+        throw new ErrorHandler(400, 'When providing a date range, must provide Start date and End ate fo range');
+      }
+      if (query.rangeDateStart && query.rangeDateEnd) {
+        query.date = {
+          $gte: query.rangeDateStart,
+          $lte: query.rangeDateEnd,
+        };
+        delete query.rangeDateStart;
+        delete query.rangeDateEnd;
+      }
+      const data = await SleepSummaryServices.get(query);
       return res.json(data);
     } catch (error) {
       return next(error);

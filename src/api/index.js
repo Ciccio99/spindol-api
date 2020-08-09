@@ -6,6 +6,7 @@ import dailyDiary from './routes/dailyDiary';
 import devices from './routes/devices';
 import sleepSummary from './routes/sleepSummary';
 import habits from './routes/habits';
+import dailyReminders from './routes/dailyReminders';
 import admin from './routes/admin';
 
 export default () => {
@@ -17,6 +18,7 @@ export default () => {
   sleepSummary(app);
   habits(app);
   devices(app);
+  dailyReminders(app);
   admin(app);
 
   return app;
