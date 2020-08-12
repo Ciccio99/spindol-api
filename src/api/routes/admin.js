@@ -4,12 +4,25 @@ import EmailServices from '../../services/EmailServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
 import roles from '../../utils/roles';
+import { generateInviteLink } from '../../services/AdminServices';
 import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
 
 export default (app) => {
   app.use('/admin', route);
+
+  route.post('/generate-invite',
+    middlewares.auth(roles.admin),
+    validate(validationSchemas.adminInviteUser),
+    async (req, res, next) => {
+      try {
+        const link = await generateInviteLink(req.body.email);
+        return res.json({ link });
+      } catch (error) {
+        return next(error);
+      }
+    });
 
   route.post('/invite',
     middlewares.auth(roles.admin),

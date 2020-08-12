@@ -1,4 +1,3 @@
-import e from 'express';
 import UserUtil from '../utils/user';
 import { sgMail, sgClient } from '../loaders/email';
 import config from '../config';
