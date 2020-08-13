@@ -29,6 +29,9 @@ const sendRegisterEmail = async (email) => {
       email: config.sendGrid.from,
       name: 'Hypnos.ai',
     },
+    asm: {
+      groupId: 15601,
+    },
     subject: 'Hypnos.ai Registration',
     dynamicTemplateData: {
       link,
@@ -44,6 +47,9 @@ const sendWelcomeEmail = async (email, name) => {
       from: {
         email: config.sendGrid.from,
         name: 'Hypnos.ai',
+      },
+      asm: {
+        groupId: 15582,
       },
       subject: 'Welcome to Hypnos.ai!',
       dynamicTemplateData: {
