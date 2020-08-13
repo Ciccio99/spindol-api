@@ -1,5 +1,9 @@
 import config from '../config';
 import UserUtil from '../utils/user';
+import DailyReminderServices from './DailyReminderServices';
+import SleepSummaryServices from './SleepSummaryServices';
+import UserServices from './UserServices';
+import SleepSummary from '../models/SleepSummary';
 import { ErrorHandler } from '../utils/error';
 
 const jwt = require('jsonwebtoken');
@@ -23,6 +27,26 @@ export const generateInviteLink = async (email) => {
   return link;
 };
 
-export const test = async () => {
+const upsertRemindersHelper = async (user) => {
+  const ss = await SleepSummary.find({ owner: user._id }).sort({ date: -1 }).limit(1);
+  const timezoneOffset = ss.timezoneOffset || -300;
+  const dueTime = 660 - timezoneOffset;
+  const dto = {
+    owner: user._id,
+    deliveryType: 'email',
+    dueTime,
+    enable: true,
+  };
+  const reminder = await DailyReminderServices.upsert(dto);
+  return reminder;
+};
 
+export const upsertDailyRemindersAllUsers = async () => {
+  const users = await UserServices.get({});
+  const reminders = [];
+  for (let i = 0; i < users.length; i += 1) {
+    reminders.push(upsertRemindersHelper(users[i]));
+  }
+  const results = await Promise.all(reminders);
+  return results;
 };
