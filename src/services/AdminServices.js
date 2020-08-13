@@ -28,8 +28,8 @@ export const generateInviteLink = async (email) => {
 };
 
 const upsertRemindersHelper = async (user) => {
-  const ss = await SleepSummary.find({ owner: user._id }).sort({ date: -1 }).limit(1);
-  const timezoneOffset = ss.timezoneOffset || -300;
+  const ss = await SleepSummary.findOne({ owner: user._id }).sort({ date: -1 }).limit(1);
+  const timezoneOffset = ss ? ss.timezoneOffset : -300;
   const dueTime = 660 - timezoneOffset;
   const dto = {
     owner: user._id,
