@@ -4,13 +4,24 @@ import EmailServices from '../../services/EmailServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
 import roles from '../../utils/roles';
-import { generateInviteLink } from '../../services/AdminServices';
+import { generateInviteLink, upsertDailyRemindersAllUsers } from '../../services/AdminServices';
 import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
 
 export default (app) => {
   app.use('/admin', route);
+
+  route.post('/upsert-reminders-all-users',
+    middlewares.auth(roles.admin),
+    async (req, res, next) => {
+      try {
+        const results = await upsertDailyRemindersAllUsers();
+        return res.json({ results });
+      } catch (error) {
+        return next(error);
+      }
+    });
 
   route.post('/generate-invite',
     middlewares.auth(roles.admin),

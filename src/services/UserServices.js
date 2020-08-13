@@ -68,7 +68,7 @@ const userRegister = async (userDTO) => {
     if (userDTO.email.toLowerCase() !== decoded.email.toLowerCase()) {
       throw new ErrorHandler(400, 'Invalid registration token.'
         + ' Please acquire a valid registration token.'
-        + ' If you believe this is a mistake, please email contact@sleepwell.ai for help.');
+        + ' If you believe this is a mistake, please email support@sleepwell.ai');
     }
   }
 
@@ -84,7 +84,7 @@ const userRegister = async (userDTO) => {
   }
 
   if (!name) {
-    throw new ErrorHandler(400, 'Must include your fullname.');
+    throw new ErrorHandler(400, 'Must include your full name.');
   }
 
   const user = new User({ email, name, password });

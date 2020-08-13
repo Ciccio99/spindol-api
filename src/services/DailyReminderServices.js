@@ -8,6 +8,20 @@ const insert = async (dto) => {
   return reminder;
 };
 
+const upsert = async (dto) => {
+  if (!dto.owner || !mongoose.Types.ObjectId.isValid(dto.owner)) {
+    throw new ErrorHandler(400, 'Must include a valid Owner ID');
+  }
+
+  let reminder = await DailyReminder.findOneAndUpdate({ owner: dto.owner }, dto, { new: true });
+  if (reminder) {
+    return reminder;
+  }
+  reminder = new DailyReminder(dto);
+  await reminder.save();
+  return reminder;
+};
+
 const update = async (id, dto) => {
   if (!mongoose.isValidObjectId(id)) {
     throw new ErrorHandler(400, 'Must provide valid ID');
@@ -45,6 +59,7 @@ const get = async (query) => {
 
 export default {
   insert,
+  upsert,
   get,
   update,
 };
