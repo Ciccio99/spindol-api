@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
+import moment from 'moment-timezone';
 import SleepSummary from '../models/SleepSummary';
+import DailyDiary from '../models/DailyDiary';
 import DailyDiaryServices from './DailyDiaryServices';
 import { ErrorHandler } from '../utils/error';
 
@@ -69,6 +71,27 @@ const update = async (dto, user) => {
   return sleepSummary;
 };
 
+const getTagsSleepData = async (startDate, endDate, tags) => {
+  const tagDiaries = await DailyDiary.find({
+    date: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+    tags: { $all: tags },
+  },
+  'date');
+  const tagSleepDates = tagDiaries.map(({ date }) => moment.utc(date).add(1, 'day').format('YYYY-MM-DD'));
+  const tagSleepData = await SleepSummary.find({ date: { $in: tagSleepDates } });
+  const baselineSleepData = await SleepSummary.find({
+    $and: [
+      { date: { $not: { $in: tagSleepDates } } },
+      { date: { $gte: startDate, $lte: endDate } },
+    ],
+  });
+
+  return { tagSleepData, baselineSleepData };
+};
+
 export default {
   getById,
   query,
@@ -76,4 +99,5 @@ export default {
   createMany,
   update,
   get,
+  getTagsSleepData,
 };
