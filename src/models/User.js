@@ -243,6 +243,15 @@ const userSchema = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
+      default: [
+        'work',
+        'family',
+        'friends',
+        'meditation',
+        'cooked',
+        'exercise',
+        'relaxed',
+      ],
     }],
   },
 }, {
