@@ -6,7 +6,6 @@ import middlewares from '../middlewares';
 import SleepSummaryUtils from '../../utils/sleepSummary';
 import Roles from '../../utils/roles';
 import xor from '../../utils/xor';
-import SleepSummary from '../../models/SleepSummary';
 import { ErrorHandler } from '../../utils/error';
 
 const route = Router();
@@ -60,6 +59,16 @@ export default (app) => {
     try {
       const fatigueScore = await SleepSummaryUtils.getFatigueScore(req.query.date, req.user);
       return res.json({ fatigueScore });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.get('/tags', middlewares.auth(), async (req, res, next) => {
+    try {
+      const { startDate, endDate, tags } = req.query;
+      const data = await SleepSummaryServices.getTagsSleepData(req.user._id, startDate, endDate, tags);
+      return res.json(data);
     } catch (error) {
       return next(error);
     }

@@ -239,11 +239,20 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   settings: {
-    tags: [{
-      type: String,
+    tags: {
+      type: [String],
       trim: true,
       lowercase: true,
-    }],
+      default: [
+        'work',
+        'family',
+        'friends',
+        'meditation',
+        'cooked',
+        'exercise',
+        'relaxed',
+      ],
+    },
   },
 }, {
   timestamps: true,

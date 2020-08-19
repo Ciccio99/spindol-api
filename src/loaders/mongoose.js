@@ -8,5 +8,6 @@ export default async () => {
     useCreateIndex: true,
     useFindAndModify: false,
   });
+
   return connection;
 };
