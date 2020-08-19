@@ -71,8 +71,9 @@ const update = async (dto, user) => {
   return sleepSummary;
 };
 
-const getTagsSleepData = async (startDate, endDate, tags) => {
+const getTagsSleepData = async (userId, startDate, endDate, tags) => {
   const tagDiaries = await DailyDiary.find({
+    owner: userId,
     date: {
       $gte: startDate,
       $lte: endDate,

@@ -239,8 +239,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   settings: {
-    tags: [{
-      type: String,
+    tags: {
+      type: [String],
       trim: true,
       lowercase: true,
       default: [
@@ -252,7 +252,7 @@ const userSchema = new mongoose.Schema({
         'exercise',
         'relaxed',
       ],
-    }],
+    },
   },
 }, {
   timestamps: true,

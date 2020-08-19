@@ -67,7 +67,7 @@ export default (app) => {
   route.get('/tags', middlewares.auth(), async (req, res, next) => {
     try {
       const { startDate, endDate, tags } = req.query;
-      const data = await SleepSummaryServices.getTagsSleepData(startDate, endDate, tags);
+      const data = await SleepSummaryServices.getTagsSleepData(req.user._id, startDate, endDate, tags);
       return res.json(data);
     } catch (error) {
       return next(error);
