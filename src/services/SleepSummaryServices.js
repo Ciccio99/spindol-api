@@ -82,8 +82,9 @@ const getTagsSleepData = async (userId, startDate, endDate, tags) => {
   },
   'date');
   const tagSleepDates = tagDiaries.map(({ date }) => moment.utc(date).add(1, 'day').format('YYYY-MM-DD'));
-  const tagSleepData = await SleepSummary.find({ date: { $in: tagSleepDates } });
+  const tagSleepData = await SleepSummary.find({ owner: userId, date: { $in: tagSleepDates } });
   const baselineSleepData = await SleepSummary.find({
+    owner: userId,
     $and: [
       { date: { $not: { $in: tagSleepDates } } },
       { date: { $gte: startDate, $lte: endDate } },
