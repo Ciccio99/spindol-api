@@ -22,6 +22,10 @@ const dailyDiarySchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   }],
+  diaryTags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag',
+  }],
   sleepSummary: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SleepSummary',

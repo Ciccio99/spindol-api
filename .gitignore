@@ -144,3 +144,6 @@ dist
 # Local SSL
 server.cert
 server.key
+
+# VS Code
+.vscode

@@ -162,36 +162,48 @@ const setDeviceToken = async (user, device, token) => {
   await user.save();
 };
 
-const insertTags = async (tags, user) => {
-  user.settings.tags = [...new Set(tags)];
-  await user.save();
+const insertTag = async (tag, user) => {
+  const updatedUser = await User.findByIdAndUpdate(user._id,
+    {
+      $push: {
+        'settings.customTags': tag,
+      },
+    },
+    { new: true });
 
-  return user.settings.tags;
+  return updatedUser.settings.customTags;
 };
 
-
-const upsertTags = async (tags, user) => {
-  let added = [];
-
-  if (user.settings.tags && user.settings.tags.length) {
-    added = user.settings.tags.addToSet(...tags);
-  } else {
-    added = [...new Set(tags)];
-    user.settings.tags = added;
+const updateTag = async (tag, user) => {
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: user._id, 'settings.customTags._id': tag._id },
+    {
+      $set: {
+        'settings.customTags.$': tag,
+      },
+    },
+    { new: true },
+  );
+  if (!updatedUser) {
+    throw new ErrorHandler(400, 'A tag with that Id does not exist.');
   }
-
-  await user.save();
-
-  return user.settings.tags;
+  return updatedUser.settings.customTags;
 };
 
-const removeTags = async (tags, user) => {
-  user.settings.tags = user.settings.tags
-    .filter((tag) => !tags.includes(tag));
-
-  await user.save();
-
-  return user.settings.tags;
+const deleteTag = async (tagId, user) => {
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: user._id, 'settings.customTags._id': tagId },
+    {
+      $pull: {
+        'settings.customTags': { _id: tagId },
+      },
+    },
+    { new: true },
+  );
+  if (!updatedUser) {
+    throw new ErrorHandler(400, 'A tag with that Id does not exist.');
+  }
+  return updatedUser.settings.customTags;
 };
 
 export default {
@@ -206,7 +218,7 @@ export default {
   setDeviceToken,
   getUser,
   getUserByEmail,
-  insertTags,
-  upsertTags,
-  removeTags,
+  insertTag,
+  updateTag,
+  deleteTag,
 };

@@ -3,6 +3,7 @@ import { validate } from 'express-validation';
 import config from '../../config';
 import validators from '../middlewares/validators';
 import UserServices from '../../services/UserServices';
+import { insertDefaultTags } from '../../services/TagsServices';
 import middlewares from '../middlewares';
 import validationSchemas from '../middlewares/validationSchemas';
 import { ErrorHandler } from '../../utils/error';
@@ -63,6 +64,7 @@ export default (app) => {
     try {
       const dto = { ...req.body };
       const { user, token } = await UserServices.userRegister(dto);
+      await insertDefaultTags(user._id);
       return res.json({ user, token });
     } catch (error) {
       return next(error);
@@ -90,40 +92,46 @@ export default (app) => {
   //   }
   // });
 
-  route.post('/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
+  route.post('/me/tags', middlewares.auth(), validate(validationSchemas.insertTag, { context: true }), async (req, res, next) => {
     try {
-      const { tags } = req.body;
-      if (!tags || tags.length === 0) {
-        throw new ErrorHandler(400, 'Must provide tags.');
+      const { tag } = req.body;
+      if (!tag) {
+        throw new ErrorHandler(400, 'Must provide tag.');
       }
-      const currTags = await UserServices.upsertTags(tags, req.user);
-      return res.json({ tags: currTags });
+      const tags = await UserServices.insertTag(tag, req.user);
+      return res.json(tags);
     } catch (error) {
       return next(error);
     }
   });
 
-  route.put('/me/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
+  route.get('/me/tags', middlewares.auth(), async (req, res, next) => {
     try {
-      const { tags } = req.body;
-      if (!tags) {
-        throw new ErrorHandler(400, 'Must provide tags.');
-      }
-      const currTags = await UserServices.insertTags(tags, req.user);
-      return res.json({ tags: currTags });
+      return res.json(req.user.settings.customTags);
     } catch (error) {
       return next(error);
     }
   });
 
-  route.delete('/tags', middlewares.auth(), validate(validationSchemas.tags, { context: true }), async (req, res, next) => {
+  route.put('/me/tags/:id', middlewares.auth(), validate(validationSchemas.updateTag, { context: true }), async (req, res, next) => {
     try {
-      const { tags } = req.body;
-      if (!tags || tags.length === 0) {
-        throw new ErrorHandler(400, 'Must provide tags.');
+      const { id } = req.params;
+      const { tag } = req.body;
+      if (tag._id !== id) {
+        throw new ErrorHandler(400, 'Must provide valid, matching Ids');
       }
-      const currTags = await UserServices.removeTags(tags, req.user);
-      return res.json({ tags: currTags });
+      const tags = await UserServices.updateTag(tag, req.user);
+      return res.json(tags);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.delete('/me/tags/:id', middlewares.auth(), validate(validationSchemas.deleteTag, { context: true }), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const tags = await UserServices.deleteTag(id, req.user);
+      return res.json(tags);
     } catch (error) {
       return next(error);
     }

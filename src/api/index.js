@@ -8,6 +8,7 @@ import sleepSummary from './routes/sleepSummary';
 import habits from './routes/habits';
 import dailyReminders from './routes/dailyReminders';
 import admin from './routes/admin';
+import tags from './routes/tags';
 
 export default () => {
   const app = Router();
@@ -19,6 +20,7 @@ export default () => {
   habits(app);
   devices(app);
   dailyReminders(app);
+  tags(app);
   admin(app);
 
   return app;

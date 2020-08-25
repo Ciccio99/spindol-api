@@ -243,15 +243,10 @@ const userSchema = new mongoose.Schema({
       type: [String],
       trim: true,
       lowercase: true,
-      default: [
-        'work',
-        'family',
-        'friends',
-        'meditation',
-        'cooked',
-        'exercise',
-        'relaxed',
-      ],
+    },
+    updated: {
+      type: Boolean,
+      default: false,
     },
   },
 }, {
@@ -282,6 +277,12 @@ userSchema.virtual('dailyDiaries', {
 // Connect User to their Habits
 userSchema.virtual('habits', {
   ref: 'Habit',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
+userSchema.virtual('tags', {
+  ref: 'Tag',
   localField: '_id',
   foreignField: 'owner',
 });
