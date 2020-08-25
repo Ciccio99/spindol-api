@@ -84,10 +84,10 @@ export default (app) => {
       const { id } = req.params;
       const { tags } = req.body;
       if (!tags || tags.length === 0) {
-        throw new ErrorHandler(400, 'Must provide tags.');
+        throw new ErrorHandler(400, 'Must provide tag ids');
       }
-      const currTags = await DailyDiaryServices.insertTags(tags, id);
-      return res.json({ tags: currTags });
+      const currTags = await DailyDiaryServices.insertTags(id, tags);
+      return res.json(currTags);
     } catch (error) {
       return next(error);
     }
@@ -98,10 +98,10 @@ export default (app) => {
       const { id } = req.params;
       const { tags } = req.body;
       if (!tags || tags.length === 0) {
-        throw new ErrorHandler(400, 'Must provide tags.');
+        throw new ErrorHandler(400, 'Must provide tag ids');
       }
-      const currTags = await DailyDiaryServices.removeTags(tags, id);
-      return res.json({ tags: currTags });
+      const currTags = await DailyDiaryServices.removeTags(id, tags);
+      return res.json(currTags);
     } catch (error) {
       return next(error);
     }

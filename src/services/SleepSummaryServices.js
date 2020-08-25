@@ -78,7 +78,7 @@ const getTagsSleepData = async (userId, startDate, endDate, tags) => {
       $gte: startDate,
       $lte: endDate,
     },
-    tags: { $all: tags },
+    diaryTags: { $all: tags },
   },
   'date');
   const tagSleepDates = tagDiaries.map(({ date }) => moment.utc(date).add(1, 'day').format('YYYY-MM-DD'));
