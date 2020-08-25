@@ -178,24 +178,6 @@ const validationSchemas = {
       })).required(),
     }),
   },
-  // insertTag: {
-  //   body: Joi.object({
-  //     tag: Joi.object({
-  //       tag: Joi.string().trim().required(),
-  //     }).required(),
-  //   }),
-  // },
-  // updateTag: {
-  //   params: Joi.object({
-  //     id: Joi.objectId().required(),
-  //   }),
-  //   body: Joi.object({
-  //     tag: Joi.object({
-  //       _id: Joi.objectId().required(),
-  //       tag: Joi.string().trim().required(),
-  //     }).required(),
-  //   }),
-  // },
   dailyDiaryTags: {
     params: Joi.object({
       id: Joi.objectId().required(),

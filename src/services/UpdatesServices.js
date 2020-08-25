@@ -19,12 +19,10 @@ export const convertUserTags = async (userId) => {
 
   await Tag.insertMany(tagsToConvert, { });
   const userTags = await Tag.find({ owner: user._id });
-  console.log(userTags);
   const tagMap = {};
   userTags.forEach((tag) => {
     tagMap[tag.tag] = tag._id;
   });
-  console.log(tagMap);
   const diaries = await DailyDiary.find({ owner: user._id, tags: { $exists: true, $ne: [] } });
 
   const bulkUpdate = diaries.map((diary) => {
@@ -46,6 +44,17 @@ export const convertUserTags = async (userId) => {
   console.log(freshDiaries);
   user.settings.updated = true;
   await user.save();
+};
+
+export const convertAllUserTags = async () => {
+  const users = await User.find({});
+
+  const promises = [];
+  for (let i = 0; i < users.length; i += 1) {
+    promises.push(convertUserTags(users[i]._id));
+  }
+
+  await Promise.all(promises);
 };
 
 export const removeDiaryTags = async () => {
