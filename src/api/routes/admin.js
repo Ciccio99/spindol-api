@@ -6,6 +6,7 @@ import middlewares from '../middlewares';
 import roles from '../../utils/roles';
 import { generateInviteLink, upsertDailyRemindersAllUsers } from '../../services/AdminServices';
 import { ErrorHandler } from '../../utils/error';
+import { convertUserTags, convertAllUserTags, removeDiaryTags } from '../../services/UpdatesServices';
 
 const route = Router();
 
@@ -18,6 +19,44 @@ export default (app) => {
       try {
         const results = await upsertDailyRemindersAllUsers();
         return res.json({ results });
+      } catch (error) {
+        return next(error);
+      }
+    });
+
+  route.post('/remove-diary-tags',
+    middlewares.auth(roles.admin),
+    async (req, res, next) => {
+      try {
+        await removeDiaryTags();
+        return res.status(204).send();
+      } catch (error) {
+        return next(error);
+      }
+    });
+
+  route.post('/update-user-tags/:id',
+    middlewares.auth(roles.admin),
+    async (req, res, next) => {
+      try {
+        const { id } = req.params;
+        if (!id) {
+          throw new ErrorHandler(400, 'Id required');
+        }
+        await convertUserTags(id);
+        return res.status(204).send();
+      } catch (error) {
+        return next(error);
+      }
+    });
+
+
+  route.post('/convert-all-user-tags',
+    middlewares.auth(roles.admin),
+    async (req, res, next) => {
+      try {
+        await convertAllUserTags();
+        return res.status(204).send();
       } catch (error) {
         return next(error);
       }

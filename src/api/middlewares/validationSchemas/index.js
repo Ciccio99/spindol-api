@@ -21,11 +21,11 @@ const validationSchemas = {
   },
   registerUserSchema: {
     body: Joi.object({
-      email: Joi.string().email().trim().required()
+      email: Joi.string().trim().max(100).email().required()
         .messages({ 'string.email': 'Invalid email.' }),
-      name: Joi.string().trim().required()
+      name: Joi.string().trim().max(100).required()
         .messages({ 'any.only': 'Must include your fullname.' }),
-      password: Joi.string().min(7).trim().invalid('password')
+      password: Joi.string().trim().min(7).max(100).invalid('password')
         .required(),
       confirmPassword: Joi.any().valid(Joi.ref('password')).required()
         .messages({ 'any.only': 'Passwords must match.' }),
@@ -123,6 +123,7 @@ const validationSchemas = {
       date: Joi.date().iso(),
       mood: Joi.string().lowercase().trim().valid('awful', 'bad', 'meh', 'good', 'excellent'),
       tags: Joi.array().items(Joi.string().lowercase().trim()),
+      diaryTags: Joi.array().items(Joi.objectId()),
     }),
   },
   paramsDevices: {
@@ -171,7 +172,10 @@ const validationSchemas = {
   },
   tags: {
     body: Joi.object({
-      tags: Joi.array().items(Joi.string().trim().lowercase()).required(),
+      tags: Joi.array().items(Joi.object({
+        _id: Joi.objectId(),
+        tag: Joi.string().trim().required(),
+      })).required(),
     }),
   },
   dailyDiaryTags: {
@@ -179,8 +183,31 @@ const validationSchemas = {
       id: Joi.objectId().required(),
     }),
     body: Joi.object({
+      tags: Joi.array().items(Joi.objectId()),
+    }),
+  },
+  tagById: {
+    params: Joi.object({
       id: Joi.objectId().required(),
-      tags: Joi.array().items(Joi.string().trim().lowercase()).required(),
+    }),
+  },
+  insertTag: {
+    body: Joi.object({
+      tag: Joi.string().trim().max(30).required(),
+    }),
+  },
+  updateTag: {
+    params: Joi.object({
+      id: Joi.objectId().required(),
+    }),
+    body: Joi.object({
+      _id: Joi.objectId().required(),
+      tag: Joi.string().trim().max(30),
+    }),
+  },
+  deleteTag: {
+    params: Joi.object({
+      id: Joi.objectId().required(),
     }),
   },
 };
