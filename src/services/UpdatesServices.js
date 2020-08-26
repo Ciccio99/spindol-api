@@ -39,9 +39,10 @@ export const convertUserTags = async (userId) => {
       },
     });
   });
-
-  const freshDiaries = await DailyDiary.bulkWrite(bulkUpdate);
-  console.log(freshDiaries);
+  if (bulkUpdate.length > 0) {
+    await DailyDiary.bulkWrite(bulkUpdate);
+    console.log(`Tags for User (${user.email} updated!)`);
+  }
   user.settings.updated = true;
   await user.save();
 };
