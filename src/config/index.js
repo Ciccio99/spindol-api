@@ -32,7 +32,7 @@ export default {
     },
   },
   register: {
-    mode: 'invite-only',
+    // mode: 'invite-only',
   },
   sendGrid: {
     apiKey: process.env.SENDGRID_API_KEY,

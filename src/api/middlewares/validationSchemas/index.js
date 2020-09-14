@@ -194,6 +194,8 @@ const validationSchemas = {
   insertTag: {
     body: Joi.object({
       tag: Joi.string().trim().max(30).required(),
+      isGoal: Joi.boolean(),
+      sleepTrial: Joi.objectId(),
     }),
   },
   updateTag: {
@@ -203,6 +205,8 @@ const validationSchemas = {
     body: Joi.object({
       _id: Joi.objectId().required(),
       tag: Joi.string().trim().max(30),
+      isGoal: Joi.boolean(),
+      sleepTrial: Joi.objectId(),
     }),
   },
   deleteTag: {

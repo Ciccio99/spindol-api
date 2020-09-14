@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import baseStatsSchema from './schemas/baseStats';
 
 const tagSchema = new mongoose.Schema({
   tag: {
@@ -11,6 +12,15 @@ const tagSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
+  isGoal: {
+    type: Boolean,
+    default: false,
+  },
+  sleepTrial: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SleepTrial',
+  },
+  stats: baseStatsSchema,
 }, {
   timestamps: true,
 });

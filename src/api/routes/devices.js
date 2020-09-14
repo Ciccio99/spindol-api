@@ -164,7 +164,7 @@ export default (app) => {
       await UserServices.setDeviceToken(user, 'withings', { ...token.token });
 
       // Sync Data asynchronously
-      // OuraServices.syncSleepSummary(user);
+      WithingsServices.syncSleepSummary(user);
 
       res.redirect(`${config.frontEndUri}/settings`);
     } catch (error) {

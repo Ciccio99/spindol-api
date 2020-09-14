@@ -2,15 +2,11 @@ import SleepTrial from '../models/SleepTrial';
 
 const getSleepTrial = async (id) => {
   const sleepTrial = await SleepTrial.findById(id);
-  return sleepTrial; 
+  return sleepTrial;
 };
 
 const querySleepTrial = async (query) => {
-  const {
-    match, sort, limit, skip,
-  } = query;
-
-  const data = await SleepTrial.find(match).sort(sort).limit(limit).skip(skip);
+  const data = await SleepTrial.find(query);
   return data;
 };
 
