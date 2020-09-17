@@ -83,6 +83,15 @@ export default (app) => {
 
   route.get('/me', middlewares.auth(), async (req, res) => res.json({ user: req.user }));
 
+  route.patch('/me/session-stats', middlewares.auth(), async (req, res, next) => {
+    try {
+      const stats = await UserServices.updateSessionStats(req.user, req.body);
+      return res.json(stats);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
   // route.delete('/me', middlewares.auth(), async (req, res, next) => {
   //   try {
   //     await UserServices.userDelete(req.user);

@@ -206,6 +206,17 @@ const deleteTag = async (tagId, user) => {
   return updatedUser.settings.customTags;
 };
 
+const updateSessionStats = async (user, dto) => {
+  if (!user.stats) {
+    user.stats = { sessionStats: dto };
+  } else {
+    user.stats.sessionStats = dto;
+  }
+
+  await user.save();
+  return user.stats.sessionStats;
+};
+
 export default {
   get,
   userLogin,
@@ -221,4 +232,5 @@ export default {
   insertTag,
   updateTag,
   deleteTag,
+  updateSessionStats,
 };
