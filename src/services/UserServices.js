@@ -207,14 +207,8 @@ const deleteTag = async (tagId, user) => {
 };
 
 const updateSessionStats = async (user, dto) => {
-  if (!user.stats) {
-    user.stats = { sessionStats: dto };
-  } else {
-    user.stats.sessionStats = dto;
-  }
-
-  await user.save();
-  return user.stats.sessionStats;
+  const updatedUser = await User.findByIdAndUpdate(user._id, { 'stats.sessionStats': { ...dto } }, { new: true });
+  return updatedUser.stats.sessionStats;
 };
 
 export default {
