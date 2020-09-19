@@ -77,9 +77,12 @@ const sleepSummarySchema = mongoose.Schema({
   latency: {
     type: Number,
   },
+  temperatureDelta: {
+    type: Number,
+  },
   source: {
     type: String,
-    enum: ['oura', 'withings', 'fitbit', 'manual'],
+    enum: ['oura', 'withings', 'fitbit', 'whoop', 'manual'],
     required: true,
   },
   owner: {

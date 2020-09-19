@@ -206,6 +206,11 @@ const deleteTag = async (tagId, user) => {
   return updatedUser.settings.customTags;
 };
 
+const updateSessionStats = async (user, dto) => {
+  const updatedUser = await User.findByIdAndUpdate(user._id, { 'stats.sessionStats': { ...dto } }, { new: true });
+  return updatedUser.stats.sessionStats;
+};
+
 export default {
   get,
   userLogin,
@@ -221,4 +226,5 @@ export default {
   insertTag,
   updateTag,
   deleteTag,
+  updateSessionStats,
 };

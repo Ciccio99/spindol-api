@@ -4,7 +4,7 @@ import middlewares from '../middlewares';
 import validationSchemas from '../middlewares/validationSchemas';
 import { ErrorHandler } from '../../utils/error';
 import {
-  getAllUserTags,
+  queryTags,
   getTagById,
   insertTag,
   updateTag,
@@ -18,7 +18,9 @@ export default (app) => {
 
   route.get('', middlewares.auth(), async (req, res, next) => {
     try {
-      const data = await getAllUserTags(req.user._id);
+      const { query } = req;
+      query.owner = req.user._id;
+      const data = await queryTags(query);
       return res.json(data);
     } catch (e) {
       return next(e);

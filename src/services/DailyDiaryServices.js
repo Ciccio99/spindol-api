@@ -25,7 +25,10 @@ const create = async (dto, user) => {
 const getById = async (id, user) => {
   const dailyDiary = await DailyDiary
     .findOne({ _id: id, owner: user._id })
-    .populate('diaryTags').exec();
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    }).exec();
   return dailyDiary;
 };
 
@@ -53,7 +56,10 @@ const getReportingStreak = async (user) => {
 const getByDate = async (date, user) => {
   const dd = await DailyDiary
     .findOne({ date, owner: user._id })
-    .populate('diaryTags').exec();
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    }).exec();
   return dd;
 };
 
@@ -68,7 +74,10 @@ const getsertByDate = async (date, user) => {
       path: 'sleepTrialTrackers',
       populate: { path: 'sleepTrial' },
     })
-    .populate('diaryTags')
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    })
     .execPopulate();
 
   return dd;
@@ -84,7 +93,10 @@ const query = async (queryObj, user) => {
       path: 'sleepTrialTrackers',
       populate: { path: 'sleepTrial' },
     })
-    .populate('diaryTags')
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    })
     .sort(sort)
     .limit(limit)
     .skip(skip)
@@ -96,7 +108,10 @@ const query = async (queryObj, user) => {
 const update = async (dto, id) => {
   const dd = await DailyDiary
     .findByIdAndUpdate(id, dto, { new: true })
-    .populate('diaryTags')
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    })
     .exec();
 
   return dd;
@@ -121,7 +136,10 @@ const upsert = async (dto, user) => {
       path: 'sleepTrialTrackers',
       populate: { path: 'sleepTrial' },
     })
-    .populate('diaryTags')
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    })
     .execPopulate();
 
 
@@ -157,14 +175,20 @@ const upsertSleepTrialTracker = async (sst, user) => {
 const insertTags = async (id, tags) => {
   const dd = await DailyDiary
     .findByIdAndUpdate(id, { $addToSet: { diaryTags: { $each: tags } } }, { new: true })
-    .populate('diaryTags').exec();
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    }).exec();
   return dd.diaryTags;
 };
 
 const removeTags = async (id, tags) => {
   const dd = await DailyDiary
     .findByIdAndUpdate(id, { $pull: { diaryTags: { $in: tags } } }, { new: true })
-    .populate('diaryTags').exec();
+    .populate({
+      path: 'diaryTags',
+      populate: { path: 'sleepTrial' },
+    }).exec();
   return dd.diaryTags;
 };
 

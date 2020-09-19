@@ -1,4 +1,5 @@
 import { ErrorHandler } from '../utils/error';
+import userStatsSchema from './schemas/userStats';
 
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -249,6 +250,7 @@ const userSchema = new mongoose.Schema({
       default: false,
     },
   },
+  stats: userStatsSchema,
 }, {
   timestamps: true,
 });

@@ -18,7 +18,7 @@ export default (app) => {
 
   route.get('', middlewares.auth(), validate(validationSchemas.searchBodyQuery), async (req, res, next) => {
     try {
-      const query = JSON.parse(req.query.query);
+      const { query } = req;
       const data = await SleepTrialServices.querySleepTrial(query);
       return res.json(data);
     } catch (error) {
