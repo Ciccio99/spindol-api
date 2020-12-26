@@ -31,7 +31,6 @@ export default (app) => {
             ],
           },
         ];
-        // query.startDate = { $gte: query.rangeDateStart, $lte: query.rangeDateEnd };
         delete query.rangeDateStart;
         delete query.rangeDateEnd;
       }
