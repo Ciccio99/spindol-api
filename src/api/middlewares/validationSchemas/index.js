@@ -124,6 +124,7 @@ const validationSchemas = {
       mood: Joi.string().lowercase().trim().valid('awful', 'bad', 'meh', 'good', 'excellent'),
       tags: Joi.array().items(Joi.string().lowercase().trim()),
       diaryTags: Joi.array().items(Joi.objectId()),
+      journalEntry: Joi.string().allow(null, ''),
     }),
   },
   paramsDevices: {

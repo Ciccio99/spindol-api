@@ -30,6 +30,9 @@ const dailyDiarySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SleepSummary',
   },
+  journalEntry: {
+    type: String,
+  },
   sleepTrialTrackers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SleepTrialTracker',
