@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import DailyDiary from '../models/DailyDiary';
 import SleepTrialTracker from '../models/SleepTrialTracker';
+import { calcCurrentStreak, calcLongestStreak } from '../utils/user-stats';
 
 const create = async (dto, user) => {
   // Get Sleep Summary Trackers
@@ -32,25 +33,27 @@ const getById = async (id, user) => {
   return dailyDiary;
 };
 
-const getReportingStreak = async (user) => {
-  const dailyDiaries = await DailyDiary.find({ owner: user._id }).select('date mood').sort({ date: -1 });
-  if (dailyDiaries.length === 0) {
-    return 0;
-  }
-  let streak = dailyDiaries[0].mood ? 1 : 0;
-  let date = moment.utc(dailyDiaries[0].date);
+const getStreak = async (user) => {
+  const dailyDiaries = await DailyDiary.find({ owner: user._id }).select('date mood diaryTags').sort({ date: 1 });
+  // if (dailyDiaries.length === 0) {
+  //   return 0;
+  // }
+  // let streak = dailyDiaries[0].mood ? 1 : 0;
+  // let date = moment.utc(dailyDiaries[0].date);
 
-  for (let i = 1; i < dailyDiaries.length; i += 1) {
-    const dd = dailyDiaries[i];
-    const ddDate = moment.utc(dd);
-    if (date.diff(ddDate, 'days') > 1 || !dd.mood) {
-      break;
-    }
-    streak += 1;
-    date = ddDate;
-  }
+  // for (let i = 1; i < dailyDiaries.length; i += 1) {
+  //   const dd = dailyDiaries[i];
+  //   const ddDate = moment.utc(dd);
+  //   if (date.diff(ddDate, 'days') > 1 || !dd.mood) {
+  //     break;
+  //   }
+  //   streak += 1;
+  //   date = ddDate;
+  // }
 
-  return streak;
+  const streak = calcCurrentStreak(dailyDiaries);
+  const longestStreak = calcLongestStreak(dailyDiaries);
+  return { streak, longestStreak };
 };
 
 const getByDate = async (date, user) => {
@@ -197,7 +200,7 @@ export default {
   getById,
   getByDate,
   getsertByDate,
-  getReportingStreak,
+  getStreak,
   query,
   update,
   upsert,

@@ -197,6 +197,8 @@ const validationSchemas = {
       tag: Joi.string().trim().max(40).required(),
       isGoal: Joi.boolean(),
       sleepTrial: Joi.objectId(),
+      shapeId: Joi.string().trim(),
+      shapeColor: Joi.string().trim(),
     }),
   },
   updateTag: {
@@ -208,6 +210,8 @@ const validationSchemas = {
       tag: Joi.string().trim().max(40),
       isGoal: Joi.boolean(),
       sleepTrial: Joi.objectId(),
+      shapeId: Joi.string().trim(),
+      shapeColor: Joi.string().trim(),
     }),
   },
   deleteTag: {
