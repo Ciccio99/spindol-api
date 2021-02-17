@@ -14,9 +14,11 @@ const isValidDiary = (diary) => {
 
 export function calcCurrentStreak(diaries) {
   const revDiaries = diaries.slice().reverse();
+
   if (
     revDiaries.length === 0
-    || dayCount([moment.utc(), revDiaries[0].date]) > daysBetween
+    || moment.utc().diff(moment.utc(revDiaries[0].date), 'days', true) > daysBetween
+    || (!isValidDiary(revDiaries[0]) && revDiaries[1] && !isValidDiary(revDiaries[1]))
   ) {
     return 0;
   }
