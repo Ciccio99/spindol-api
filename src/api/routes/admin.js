@@ -4,7 +4,7 @@ import EmailServices from '../../services/EmailServices';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
 import roles from '../../utils/roles';
-import { generateInviteLink, upsertDailyRemindersAllUsers } from '../../services/AdminServices';
+import { generateInviteLink, upsertDailyRemindersAllUsers, updateUserPassword } from '../../services/AdminServices';
 import { ErrorHandler } from '../../utils/error';
 import { convertUserTags, convertAllUserTags, removeDiaryTags } from '../../services/UpdatesServices';
 
@@ -12,6 +12,22 @@ const route = Router();
 
 export default (app) => {
   app.use('/admin', route);
+
+  route.post('/update-user-password', middlewares.auth(roles.admin), async (req, res, next) => {
+    try {
+      const { email, newPassword } = req.body;
+      if (!email) {
+        throw new ErrorHandler(400, 'Must provide user email');
+      }
+      if (!newPassword || newPassword.length === 0) {
+        throw new ErrorHandler(400, 'Must provide new password');
+      }
+      await updateUserPassword(email, newPassword);
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  });
 
   route.post('/upsert-reminders-all-users',
     middlewares.auth(roles.admin),
