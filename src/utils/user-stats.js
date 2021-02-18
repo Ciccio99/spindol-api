@@ -17,14 +17,13 @@ export function calcCurrentStreak(diaries) {
 
   if (
     revDiaries.length === 0
-    || moment.utc().diff(moment.utc(revDiaries[0].date), 'days', true) > daysBetween
-    || (!isValidDiary(revDiaries[0]) && revDiaries[1] && !isValidDiary(revDiaries[1]))
   ) {
     return 0;
   }
 
+
   const initIndex = isValidDiary(revDiaries[0]) ? 0 : 1;
-  let streakIndex = initIndex;
+  let streak = 0;
 
   for (let i = initIndex; i < revDiaries.length; i += 1) {
     const before = revDiaries[i === 0 ? 0 : i - 1];
@@ -34,14 +33,13 @@ export function calcCurrentStreak(diaries) {
         < daysBetween
       && isValidDiary(current)
     ) {
-      streakIndex = i;
+      streak += 1;
     } else {
       break;
     }
   }
 
-  const lastStreakDiary = revDiaries[streakIndex];
-  return dayCount([revDiaries[initIndex].date, lastStreakDiary.date]);
+  return streak;
 }
 
 export function calcLongestStreak(diaries) {
