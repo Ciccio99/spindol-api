@@ -32,7 +32,7 @@ export default {
     },
   },
   register: {
-    // mode: 'invite-only',
+    mode: 'open',
   },
   sendGrid: {
     apiKey: process.env.SENDGRID_API_KEY,
@@ -44,5 +44,8 @@ export default {
     lists: {
       betaRegistration: 'a1834fbb-a213-4a59-8f23-701243771a2c',
     },
+  },
+  stripe: {
+    api_key: process.env.STRIPE_API_KEY,
   },
 };
