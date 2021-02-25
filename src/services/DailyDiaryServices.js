@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import DailyDiary from '../models/DailyDiary';
 import SleepTrialTracker from '../models/SleepTrialTracker';
 import { calcCurrentStreak, calcLongestStreak } from '../utils/user-stats';
