@@ -66,7 +66,7 @@ const registerMarketingRecipient = async (email, name) => {
   }
 
   const data = {
-    list_ids: [config.sendGrid.lists.testRegistration],
+    list_ids: [config.sendGrid.lists.registeredUsers],
     contacts: [{
       email,
       first_name: name.split(' ')[0] || '',
