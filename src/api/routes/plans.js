@@ -12,12 +12,6 @@ import {
 
 const route = Router();
 
-// Set your secret key. Remember to switch to your live secret key in production.
-// See your keys here: https://dashboard.stripe.com/account/apikeys
-const stripe = require('stripe')(
-  'sk_test_51IMIXhHTjrDKdTifnKQGAXK8cmctICmr3gpvoIVYUCFeHcz1n0gUs4lVUzDJ76XUqEgBXQXzjF7V0CaaveXhC4JW008V6r4Hbe',
-);
-
 export default (app) => {
   app.use('/plans', route);
 

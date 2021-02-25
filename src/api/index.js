@@ -10,6 +10,7 @@ import dailyReminders from './routes/dailyReminders';
 import admin from './routes/admin';
 import tags from './routes/tags';
 import plans from './routes/plans';
+import stripeWebhooks from './routes/stripe-webhooks';
 
 export default () => {
   const app = Router();
@@ -24,6 +25,7 @@ export default () => {
   dailyReminders(app);
   tags(app);
   plans(app);
+  stripeWebhooks(app);
   admin(app);
 
   return app;
