@@ -148,6 +148,11 @@ const getUserByEmail = async (email) => {
   return user;
 };
 
+export const getUserByStripeCustomer = async (customerId) => {
+  const user = await User.findOne({ 'stripe.customerId': customerId });
+  return user;
+};
+
 const setDeviceToken = async (user, device, token) => {
   if (!user) {
     throw new Error('User object is required');

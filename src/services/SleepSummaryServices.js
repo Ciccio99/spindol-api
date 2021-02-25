@@ -57,12 +57,13 @@ const create = async (dto, user) => {
 };
 
 const createMany = async (sleepSummaryArr, user) => {
-  const sleepSummaries = sleepSummaryArr.map(async (ss) => {
+  const sleepSummaries = await sleepSummaryArr.map(async (ss) => {
     const sleepSummary = await create(ss, user);
     return sleepSummary;
   });
   return sleepSummaries;
 };
+
 const update = async (dto, user) => {
   const sleepSummary = await SleepSummary.findByIdAndUpdate(
     { _id: dto._id, owner: user._id },

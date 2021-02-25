@@ -1,7 +1,7 @@
 // Reference streak calcs
 // https://github.com/freeCodeCamp/freeCodeCamp/pull/5134/files
 import moment from 'moment-timezone';
-import { dayCount } from './date-utils';
+import { Cursor } from 'mongodb';
 
 const daysBetween = 1.5;
 
@@ -47,30 +47,23 @@ export function calcLongestStreak(diaries) {
     return 0;
   }
 
-  let tail = diaries[0];
+  let currStreak = 0;
 
-  const longestDiaries = diaries.reduce(
-    (longest, head, index) => {
-      const last = diaries[index === 0 ? 0 : index - 1];
-      if (
-        moment(moment.utc(head.date)).diff(
-          moment.utc(last.date),
-          'days',
-          true,
-        ) > daysBetween
-        || (!head.mood && (!head.diaryTags || head.diaryTags.length === 0))
-      ) {
-        tail = head;
-      }
-      if (
-        dayCount(longest.map((d) => d.date)) < dayCount([head.date, tail.date])
-      ) {
-        return [head, tail];
+  const longestStreak = diaries.reduce((longest, current, index) => {
+    const before = diaries[index === 0 ? 0 : index - 1];
+    if (
+      moment.utc(current.date).diff(moment.utc(before.date), 'days', true) < daysBetween
+      && isValidDiary(current)
+    ) {
+      currStreak += 1;
+      if (currStreak > longest) {
+        return currStreak;
       }
       return longest;
-    },
-    [diaries[0], diaries[0]],
-  );
+    }
+    currStreak = 0;
+    return longest;
+  }, 0);
 
-  return dayCount(longestDiaries.map((d) => d.date));
+  return longestStreak;
 }
