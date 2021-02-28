@@ -268,6 +268,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   settings: {
+    powerUser: {
+      type: Boolean,
+      default: false,
+    },
     tags: {
       type: [String],
       trim: true,

@@ -36,14 +36,21 @@ export const createCheckoutSession = async (user, priceId) => {
         quantity: 1,
       },
     ],
+    allow_promotion_codes: true,
     success_url: `${config.frontEndUri}/plans/success/{CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.frontEndUri}/plans`,
   };
 
   if (!user.stripe.trialed) {
-    sessionOptions.subscription_data = {
-      trial_period_days: 14,
-    };
+    if (user.settings && user.settings.powerUser) {
+      sessionOptions.subscription_data = {
+        trial_period_days: 30,
+      };
+    } else {
+      sessionOptions.subscription_data = {
+        trial_period_days: 14,
+      };
+    }
   }
 
   const session = await stripe.checkout.sessions.create(sessionOptions);
