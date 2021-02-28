@@ -2,6 +2,9 @@ import { Joi } from 'express-validation';
 
 Joi.objectId = require('joi-objectid')(Joi);
 
+// Express validation docs: https://github.com/AndrewKeig/express-validation
+// Joi errors: https://github.com/sideway/joi/blob/master/API.md#list-of-errors
+
 const validationSchemas = {
   paramsId: {
     params: Joi.object({
@@ -25,8 +28,14 @@ const validationSchemas = {
         .messages({ 'string.email': 'Invalid email.' }),
       name: Joi.string().trim().max(100).required()
         .messages({ 'any.only': 'Must include your fullname.' }),
-      password: Joi.string().trim().min(7).max(100).invalid('password')
-        .required(),
+      password: Joi.string().trim().min(7).max(128).invalid('password')
+        .required()
+        .messages({
+          'any.invalid': 'Password cannot be "password"',
+          'string.empty': 'Password cannot be empty',
+          'string.min': 'Password should have a minimum length of 7',
+          'string.max': 'Password can only have a maximum of 128 characters',
+        }),
       confirmPassword: Joi.any().valid(Joi.ref('password')).required()
         .messages({ 'any.only': 'Passwords must match.' }),
       token: Joi.string().trim(),
@@ -35,13 +44,13 @@ const validationSchemas = {
   adminInviteUser: {
     body: Joi.object({
       email: Joi.string().email().trim().required()
-        .messages({ 'string.email': 'Invalid email.' }),
+        .messages({ 'string.email': 'Invalid email' }),
     }),
   },
   adminInviteManyUsers: {
     body: Joi.object({
       emails: Joi.array().items(Joi.string().email().lowercase().trim()
-        .messages({ 'string.email': 'Invalid email.' })).required(),
+        .messages({ 'string.email': 'Invalid email' })).required(),
     }),
   },
   createSleepTrialSchema: {
@@ -154,8 +163,17 @@ const validationSchemas = {
   userUpdate: {
     body: Joi.object({
       email: Joi.string().email().trim(),
-      name: Joi.string().trim(),
-      password: Joi.string().min(7).trim(),
+      name: Joi.string().trim().max(100)
+        .messages({
+          'string.empty': 'Name cannot be empty',
+          'string.max': 'Name can only be a maximum of 100 characters',
+        }),
+      password: Joi.string().min(7).max(128).trim()
+        .messages({
+          'string.empty': 'Password cannot be empty.',
+          'string.min': 'Password should have a minimum length of 7',
+          'string.max': 'Password can only have a maximum of 128 characters',
+        }),
       confirmPassword: Joi.when('password', {
         is: Joi.exist(),
         then: Joi.string().trim().required().valid(Joi.ref('password')),

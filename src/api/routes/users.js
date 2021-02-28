@@ -74,7 +74,7 @@ export default (app) => {
   });
 
   // ME
-  route.patch('/me', middlewares.auth(), validate(validationSchemas.userUpdate), async (req, res, next) => {
+  route.patch('/me', middlewares.auth(), validate(validationSchemas.userUpdate, { keyByField: true }), async (req, res, next) => {
     try {
       const user = await UserServices.userEdit(req.user, req.body);
       return res.json({ user });
