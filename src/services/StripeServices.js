@@ -2,10 +2,9 @@ import Logger from '../loaders/logger';
 import config from '../config';
 import { getUserByStripeCustomer } from './UserServices';
 import { ErrorHandler } from '../utils/error';
+import { STRIPE_TAX } from '../utils/constants/stripe-tax';
 
 const stripe = require('stripe')(config.stripe.api_key);
-
-const TX_TAX_ID = 'txr_1IQHWoHTjrDKdTifTvzMQ8zu';
 
 export const createStripeCustomer = async (user) => {
   const customer = await stripe.customers.create({
@@ -37,7 +36,7 @@ export const createCheckoutSession = async (user, priceId) => {
         price: priceId,
         quantity: 1,
         dynamic_tax_rates: [
-          TX_TAX_ID,
+          STRIPE_TAX.TAX_ID,
         ],
       },
     ],
