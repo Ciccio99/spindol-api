@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
       const minimumDate = new Date();
       minimumDate.setUTCFullYear(now.getUTCFullYear() - 18);
       if (value.getTime() > minimumDate.getTime()) {
-        throw new Error('Must be 18 years of age in order to use the SleepWell.ai service.');
+        throw new Error('Must be 18 years of age in order to use Spindol.');
       }
     },
   },
@@ -110,6 +110,34 @@ const userSchema = new mongoose.Schema({
       if (value > 2 || value < 0) {
         throw new Error('Gender must be a number between 0 and 2.');
       }
+    },
+  },
+  stripe: {
+    customerId: {
+      type: String,
+      trim: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+    },
+    trialed: {
+      type: Boolean,
+      default: false,
+    },
+    subscription: {
+      id: {
+        type: String,
+        trim: true,
+      },
+      type: {
+        type: String,
+        trim: true,
+      },
+      status: {
+        type: String,
+        trim: true,
+      },
     },
   },
   occupation: {
@@ -240,6 +268,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   settings: {
+    powerUser: {
+      type: Boolean,
+      default: false,
+    },
     tags: {
       type: [String],
       trim: true,

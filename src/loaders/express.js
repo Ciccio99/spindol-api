@@ -22,7 +22,14 @@ export default ({ app }) => {
     origin: config.frontEndUri,
   }));
   app.use(cookieParser());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({
+    verify(req, res, buf) {
+      const url = req.originalUrl;
+      if (url.startsWith('/api/stripe-webhooks')) {
+        req.rawBody = buf.toString();
+      }
+    },
+  }));
   app.use(bodyParser.urlencoded({ extended: true }));
 
   /**

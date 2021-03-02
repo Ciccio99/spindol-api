@@ -12,6 +12,14 @@ const tagSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
+  shapeId: {
+    type: String,
+    trim: true,
+  },
+  shapeColor: {
+    type: String,
+    trim: true,
+  },
   isGoal: {
     type: Boolean,
     default: false,

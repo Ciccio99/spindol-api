@@ -32,17 +32,29 @@ export default {
     },
   },
   register: {
-    // mode: 'invite-only',
+    mode: 'open',
   },
   sendGrid: {
     apiKey: process.env.SENDGRID_API_KEY,
-    from: 'support@sleepwell.ai',
+    from: 'support@spindol.com',
     templates: {
       inviteUser: 'd-ca101e944c2a4ce98ad2e0af2de37abf',
       welcomeUser: 'd-f167858aacee4e36b91c7c086428d4a3',
     },
     lists: {
+      registeredUsers: process.env.SENDGRID_REGISTERED_USER_LIST,
       betaRegistration: 'a1834fbb-a213-4a59-8f23-701243771a2c',
+      testRegistration: '67c03e68-4794-499c-b483-b1a5daf0b4c0',
     },
+    unsubscribeGroups: {
+      transactional: 15601,
+      updates: 15583,
+      marketing: 15582,
+      dailyReminder: 15581,
+    },
+  },
+  stripe: {
+    api_key: process.env.STRIPE_API_KEY,
+    signing_secret: process.env.STRIPE_SIGNING_SECRET,
   },
 };

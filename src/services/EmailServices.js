@@ -46,14 +46,13 @@ const sendWelcomeEmail = async (email, name) => {
       templateId: config.sendGrid.templates.welcomeUser,
       from: {
         email: config.sendGrid.from,
-        name: 'Hypnos.ai',
+        name: 'Spindol',
       },
       asm: {
-        groupId: 15582,
+        groupId: config.sendGrid.unsubscribeGroups.transactional,
       },
-      subject: 'Welcome to Hypnos.ai!',
       dynamicTemplateData: {
-        name,
+        name: name.split(' ')[0] || name,
       },
     });
   } catch (error) {
@@ -67,9 +66,10 @@ const registerMarketingRecipient = async (email, name) => {
   }
 
   const data = {
-    list_ids: [config.sendGrid.lists.betaRegistration],
+    list_ids: [config.sendGrid.lists.registeredUsers],
     contacts: [{
       email,
+      first_name: name.split(' ')[0] || '',
       custom_fields: {
         w1_T: name || '',
       },

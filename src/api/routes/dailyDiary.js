@@ -30,10 +30,10 @@ export default (app) => {
     }
   });
 
-  route.get('/reportingStreak', middlewares.auth(), async (req, res, next) => {
+  route.get('/streak', middlewares.auth(), async (req, res, next) => {
     try {
-      const streak = await DailyDiaryServices.getReportingStreak(req.user);
-      return res.json({ streak });
+      const streak = await DailyDiaryServices.getStreak(req.user);
+      return res.json(streak);
     } catch (error) {
       return next(error);
     }

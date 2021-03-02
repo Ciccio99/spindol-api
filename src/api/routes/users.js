@@ -4,6 +4,7 @@ import config from '../../config';
 import validators from '../middlewares/validators';
 import UserServices from '../../services/UserServices';
 import { insertDefaultTags } from '../../services/TagsServices';
+import { createStripeCustomer } from '../../services/StripeServices';
 import middlewares from '../middlewares';
 import validationSchemas from '../middlewares/validationSchemas';
 import { ErrorHandler } from '../../utils/error';
@@ -64,6 +65,7 @@ export default (app) => {
     try {
       const dto = { ...req.body };
       const { user, token } = await UserServices.userRegister(dto);
+      await createStripeCustomer(user);
       await insertDefaultTags(user._id);
       return res.json({ user, token });
     } catch (error) {
@@ -72,7 +74,7 @@ export default (app) => {
   });
 
   // ME
-  route.patch('/me', middlewares.auth(), validate(validationSchemas.userUpdate), async (req, res, next) => {
+  route.patch('/me', middlewares.auth(), validate(validationSchemas.userUpdate, { keyByField: true }), async (req, res, next) => {
     try {
       const user = await UserServices.userEdit(req.user, req.body);
       return res.json({ user });
@@ -81,7 +83,7 @@ export default (app) => {
     }
   });
 
-  route.get('/me', middlewares.auth(), async (req, res) => res.json({ user: req.user }));
+  route.get('/me', middlewares.auth(), async (req, res) => res.json(req.user));
 
   route.patch('/me/session-stats', middlewares.auth(), async (req, res, next) => {
     try {

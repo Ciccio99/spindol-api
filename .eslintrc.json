@@ -18,6 +18,7 @@
         "no-underscore-dangle": ["error", { "allow": ["_id"] }],
         "no-use-before-define": ["error", { "variables": false }],
         "no-param-reassign": ["error", { "props": false }],
-        "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
+        "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
+        "quotes": [2, "single", { "avoidEscape": true }]
     }
 }

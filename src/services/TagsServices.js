@@ -18,7 +18,7 @@ export const updateTag = async (dto) => Tag.findByIdAndUpdate(dto._id, dto, { ne
 export const deleteTag = async (tagId) => Tag.findByIdAndDelete(tagId);
 
 export const insertDefaultTags = async (userId) => Tag
-  .insertMany(defaultTags.map((value) => ({
-    tag: value,
+  .insertMany(defaultTags.map((tag) => ({
+    ...tag,
     owner: userId,
   })));
