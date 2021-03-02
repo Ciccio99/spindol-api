@@ -56,5 +56,6 @@ export default {
   stripe: {
     api_key: process.env.STRIPE_API_KEY,
     signing_secret: process.env.STRIPE_SIGNING_SECRET,
+    env: process.env.STRIPE_ENV,
   },
 };
