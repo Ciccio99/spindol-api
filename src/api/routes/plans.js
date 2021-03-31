@@ -3,6 +3,7 @@ import { validate } from 'express-validation';
 import validationSchemas from '../middlewares/validationSchemas';
 import middlewares from '../middlewares';
 import config from '../../config';
+
 import {
   createCheckoutSession,
   getCustomerPortal,
