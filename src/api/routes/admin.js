@@ -7,6 +7,7 @@ import roles from '../../utils/roles';
 import { generateInviteLink, upsertDailyRemindersAllUsers, updateUserPassword } from '../../services/AdminServices';
 import { ErrorHandler } from '../../utils/error';
 import { convertUserTags, convertAllUserTags, removeDiaryTags } from '../../services/UpdatesServices';
+import { exportQuery as queryDailyDiaries } from '../../services/DailyDiaryServices';
 
 const route = Router();
 
@@ -130,6 +131,20 @@ export default (app) => {
       }
       await EmailServices.registerMarketingRecipient(email, name);
       return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  route.get('/getUserData', middlewares.auth(roles.admin), async (req, res, next) => {
+    try {
+      const { userId } = req.query;
+      if (!userId) throw new ErrorHandler(400, 'Must provide a userId');
+      const query = {
+        match: {}, sort: { date: -1 }, skip: 0, limit: 0,
+      };
+      const data = await queryDailyDiaries(query, { _id: userId });
+      return res.json(data);
     } catch (error) {
       return next(error);
     }

@@ -69,16 +69,12 @@ const getsertByDate = async (date, user) => {
   return dd;
 };
 
-const query = async (queryObj, user) => {
+export const query = async (queryObj, user) => {
   const {
     match, sort, limit, skip,
   } = queryObj;
   const dailyDiaries = await DailyDiary.find({ ...match, owner: user._id })
     .populate('sleepSummary')
-    .populate({
-      path: 'sleepTrialTrackers',
-      populate: { path: 'sleepTrial' },
-    })
     .populate({
       path: 'diaryTags',
       populate: { path: 'sleepTrial' },
@@ -90,6 +86,22 @@ const query = async (queryObj, user) => {
 
   return dailyDiaries;
 };
+
+export const exportQuery = async (queryObj, user) => {
+  const {
+    match, sort, limit, skip,
+  } = queryObj;
+  const dailyDiaries = await DailyDiary.find({ ...match, owner: user._id })
+    .populate('sleepSummary')
+    .populate('diaryTags', '-_id tag')
+    .sort(sort)
+    .limit(limit)
+    .skip(skip)
+    .exec();
+
+  return dailyDiaries;
+};
+
 
 const update = async (dto, id) => {
   const dd = await DailyDiary

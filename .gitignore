@@ -1,27 +1,3 @@
-Skip to content
-Why GitHub?
-Enterprise
-Explore
-Marketplace
-Pricing
-Search
-
-Sign in
-Sign up
-github
-/
-gitignore
-3k51.3k
- Code Pull requests 115 Actions Projects 0 Security Insights
-Join GitHub today
-GitHub is home to over 40 million developers working together to host and review code, manage projects, and build software together.
-
-gitignore/Node.gitignore
-@ChiefORZ ChiefORZ [Node] Add yarn v2 excludes (#3327)
-be4f76b 13 days ago
-@stuartpb@shiftkey@SimonSiefke@TennyZhuang@venatoria@ro31337@Richienb@melonmanchan@gouthamve@jucrouzet@cheddar@arcresu@xamgore@kesoji@tejashah88@sroberts@segayuu@ChiefORZ@MCSH@rgbkrk@rsolomo@peat@noinkling@ndelvalle@MikeRalphson@lmedson
-115 lines (84 sloc)  1.75 KB
-
 # Logs
 logs
 *.log
